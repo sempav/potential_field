@@ -13,7 +13,6 @@ GRID_COLOR = 100,100,100
 AXES_COLOR = 155,155,155
 
 TARGET_RADIUS = 5
-BOT_RADIUS = 20
 
 DRAW_COORD_GRID = True
 DRAW_FORCE_FIELD = False
@@ -71,10 +70,10 @@ class Graphics:
         if targets is not None:
             for target in targets:
                 pygame.draw.circle(self.screen, YELLOW,
-                                   field.fit_in_rect(target, self.size),
+                                   self.field.fit_in_rect(target, self.size),
                                    TARGET_RADIUS, 1)
         for obj in bots:
             pygame.draw.circle(self.screen, RED,
                                self.field.fit_in_rect(obj.pos, self.size),
-                               BOT_RADIUS, 1)
+                               self.field.scale(obj.radius, self.size), 1)
         pygame.display.flip()

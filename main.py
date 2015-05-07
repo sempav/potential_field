@@ -29,14 +29,13 @@ def main():
     #field = Field((10.0, 10.0))
     field = Field((0.01 * size[0], 0.01 * size[1]))
     graph = Graphics(field, size)
-    eng = engine.Engine(field, MOVEMENT_LAW,
-                               VELOCITY_CAP,
+    eng = engine.Engine(field, VELOCITY_CAP,
                                BORDER_REFLECT)
 
-    eng.bots.append(Bot(pos = (-4.0,  0.0), vel = (0.0, 0.0)))
-    eng.bots.append(Bot(pos = ( 1.0,  0.0), vel = (0.0, 0.0)))
-    eng.bots.append(Bot(pos = ( 1.0,  1.0), vel = (0.0, 0.0)))
-    eng.bots.append(Bot(pos = ( 1.0,  2.0), vel = (0.0, 0.0)))
+    eng.bots.append(Bot(pos = ( 0.0,  0.1), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
+    eng.bots.append(Bot(pos = ( 1.0,  0.2), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
+    eng.bots.append(Bot(pos = ( 2.0,  0.7), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
+    eng.bots.append(Bot(pos = (-3.0,  0.5), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
 
     finished = False
     clock = pygame.time.Clock()

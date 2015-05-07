@@ -1,5 +1,7 @@
 from vector import Vector
 
+EPSILON = 1e-3
+
 FIELD_CENTERED = True
 
 class Field:
@@ -30,3 +32,8 @@ class Field:
         return Vector(int(rl + rw * (pos.x - self.left) / self.width),
                       int(rb + rh * (1.0 - (pos.y - self.bottom) / self.height)))
 
+
+    def scale(self, dist, resolution):
+        if abs(resolution[0] / self.width - resolution[1] / self.height) > EPSILON:
+            raise RuntimeError("Field has non-uniform scale")
+        return int(dist * (resolution[0] / self.width))

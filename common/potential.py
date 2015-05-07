@@ -8,10 +8,10 @@ def morse(r):
     a = 1.0
     return k * (1 - math.exp(-a * (r - d0)))**2
 
-def gradient(bot, pos):
+def gradient(bot, pos, thickness):
     direction = pos - bot
     eps = 10**-4
-    here = morse(dist(pos, bot))
-    there = morse(dist(pos + eps * direction, bot))
+    here = morse(dist(pos, bot) - thickness)
+    there = morse(dist(pos + eps * direction, bot) - thickness)
     coeff = (there - here) / eps;
     return direction * coeff;

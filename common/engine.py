@@ -1,12 +1,8 @@
-from bot import Bot
 import potential
 import vector
 from vector import Point, Vector, length, normalize
 
 import enum
-
-
-FORCE_SENSITIVITY = 1e-3
 
 
 class Movement(enum.Enum):
@@ -17,14 +13,15 @@ class Movement(enum.Enum):
 
 class Engine():
 
-    def __init__(self, field, movement_law, velocity_cap, border_reflect = False):
+    def __init__(self, field, velocity_cap, border_reflect = False):
         self.field = field
 
         self.velocity_cap = velocity_cap
         self.border_reflect = border_reflect
 
-        self.targets = []
         self.bots = []
+        self.obstacles = []
+        self.targets = []
 
 
     def border_reflect_bots(self):
@@ -55,8 +52,6 @@ class Engine():
 
 
     def update(self, delta_time):
-        delta_total = Vector(0, 0)
-        delta_max = Vector(0, 0)
         for i, bot in enumerate(self.bots):
             bot.vel = bot.calc_desired_velocity(self.bots, [])
 
