@@ -1,9 +1,9 @@
-from vector import Vector, Point, dist
+from vector import Vector, Point, dist, length, normalize
 from engine import Movement
 import potential
 
 
-FORCE_SENSITIVITY = 1e-3
+FORCE_SENSITIVITY = 1e-4
 BOT_RADIUS = 0.3
 
 
@@ -44,8 +44,7 @@ class Bot():
 
         if self.movement == Movement.Dir:
             if length(vel) > 0:
-                vel = vector.normalize(vel)
-                vel *= self.velocity_cap
+                vel = normalize(vel)
         return vel
 
 
