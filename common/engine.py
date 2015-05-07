@@ -53,7 +53,7 @@ class Engine():
 
     def update(self, delta_time):
         for i, bot in enumerate(self.bots):
-            bot.vel = bot.calc_desired_velocity(self.bots, [], targets)
+            bot.vel = bot.calc_desired_velocity(self.bots, self.obstacles, self.targets)
 
         if self.border_reflect:
             self.border_reflect_bots()

@@ -4,7 +4,7 @@
 import math
 import pygame
 
-from common import engine, vector, potential
+from common import engine, vector, potential, obstacle
 from common.vector import Point, Vector, length, normalize
 from common.graphics import Graphics
 from common.field import Field
@@ -25,19 +25,25 @@ MOVEMENT_LAW = engine.Movement.Speed
 
 
 def main():
-    size = (1024, 768)
-    #field = Field((10.0, 10.0))
+    size = (1910, 1040)
     field = Field((0.01 * size[0], 0.01 * size[1]), size)
     graph = Graphics(field, size)
     eng = engine.Engine(field, VELOCITY_CAP,
                                BORDER_REFLECT)
 
-    eng.bots.append(Bot(pos = ( 0.0,  0.1), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
-    eng.bots.append(Bot(pos = ( 1.0,  0.2), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
-    eng.bots.append(Bot(pos = ( 2.0,  0.7), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
-    eng.bots.append(Bot(pos = (-3.0,  0.5), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
+    eng.bots.append(Bot(pos = ( 3.0,  0.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
+    eng.bots.append(Bot(pos = (-3.0, -1.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
+    eng.bots.append(Bot(pos = (-5.0,  0.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
+    eng.bots.append(Bot(pos = (-5.0, -1.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
+    eng.bots.append(Bot(pos = (-6.0,  0.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
+    eng.bots.append(Bot(pos = (-6.0, -1.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
+    eng.bots.append(Bot(pos = (-7.0,  0.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
+    eng.bots.append(Bot(pos = (-7.0,  1.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
 
-    eng.targets.append(Point(2.5, 1.0))
+    eng.targets.append(Point(4.5, 1.0))
+
+    eng.obstacles.append(obstacle.create_obstacle_circle(Point(1.25, 0.5), 1.1))
+    eng.obstacles.append(obstacle.create_obstacle_circle(Point(-1.25, 0.0), 0.2))
 
     finished = False
     clock = pygame.time.Clock()
@@ -47,7 +53,13 @@ def main():
             if event.type == pygame.QUIT:
                 finished = True;
         eng.update(delta_time)
-        graph.render(eng.bots)
+        time = 0.001 * pygame.time.get_ticks()
+        #eng.targets[0] = Point(math.cos(2 * time),
+        #                       math.sin(2 * time))
+        graph.render(bots = eng.bots,
+                     obstacles = eng.obstacles,
+                     targets = eng.targets)
+
     pygame.quit()
 
 

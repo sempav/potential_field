@@ -1,4 +1,4 @@
-from vector import Vector, Point
+from vector import Vector, Point, dist
 from engine import Movement
 import potential
 
@@ -19,13 +19,28 @@ class Bot():
         if self.movement != Movement.Accel:
             vel = Vector(0, 0)
         for inter in bots:
-            impulse = -FORCE_SENSITIVITY * potential.gradient(inter.pos,
-                                                              self.pos,
-                                                              self.radius + inter.radius)
-            delta_v = impulse
-            vel = Vector(vel.x + delta_v.x,
-                         vel.y + delta_v.y)
-        for target in targets
+            impulse = -FORCE_SENSITIVITY * potential.gradient(potential.morse,
+                                              lambda pos: dist(inter.pos, pos),
+                                              self.pos,
+                                              inter.pos - self.pos,
+                                              self.radius + inter.radius)
+            vel += impulse
+
+        for target in targets:
+            impulse = FORCE_SENSITIVITY * potential.gradient(potential.quadratic,
+                                             lambda pos: dist(target, pos),
+                                             self.pos,
+                                             target - self.pos,
+                                             0)
+            vel += impulse
+
+        for obstacle in obstacles:
+            impulse = -FORCE_SENSITIVITY * potential.gradient(potential.inverse_quadratic,
+                                              obstacle.distance,
+                                              self.pos,
+                                              obstacle.center - self.pos,
+                                              self.radius)
+            vel += impulse
 
         if self.movement == Movement.Dir:
             if length(vel) > 0:
