@@ -27,7 +27,7 @@ MOVEMENT_LAW = engine.Movement.Speed
 def main():
     size = (1024, 768)
     #field = Field((10.0, 10.0))
-    field = Field((0.01 * size[0], 0.01 * size[1]))
+    field = Field((0.01 * size[0], 0.01 * size[1]), size)
     graph = Graphics(field, size)
     eng = engine.Engine(field, VELOCITY_CAP,
                                BORDER_REFLECT)
@@ -36,6 +36,8 @@ def main():
     eng.bots.append(Bot(pos = ( 1.0,  0.2), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
     eng.bots.append(Bot(pos = ( 2.0,  0.7), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
     eng.bots.append(Bot(pos = (-3.0,  0.5), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
+
+    eng.targets.append(Point(2.5, 1.0))
 
     finished = False
     clock = pygame.time.Clock()

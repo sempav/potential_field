@@ -25,10 +25,12 @@ class Bot():
             delta_v = impulse
             vel = Vector(vel.x + delta_v.x,
                          vel.y + delta_v.y)
-            if self.movement == Movement.Dir:
-                if length(vel) > 0:
-                    vel = vector.normalize(vel)
-                    vel *= self.velocity_cap
+        for target in targets
+
+        if self.movement == Movement.Dir:
+            if length(vel) > 0:
+                vel = vector.normalize(vel)
+                vel *= self.velocity_cap
         return vel
 
 

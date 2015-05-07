@@ -1,6 +1,5 @@
 import pygame
 
-from frange import frange
 from vector import Point
 
 RED = 255, 0, 0
@@ -28,12 +27,12 @@ class Graphics:
     def draw_coordinate_grid(self, num = (10,10)):
         for x in xrange(int(self.field.left), int(self.field.right), 1):
             pygame.draw.line(self.screen, GRID_COLOR if x != 0 else AXES_COLOR,
-                             self.field.fit_in_rect(Point(x, self.field.bottom), self.size),
-                             self.field.fit_in_rect(Point(x, self.field.top), self.size))
+                             self.field.fit_on_screen(Point(x, self.field.bottom)),
+                             self.field.fit_on_screen(Point(x, self.field.top)))
         for y in frange(int(self.field.bottom), int(self.field.top), 1):
             pygame.draw.line(self.screen, GRID_COLOR if y != 0 else AXES_COLOR,
-                             self.field.fit_in_rect(Point(self.field.left,  y), self.size),
-                             self.field.fit_in_rect(Point(self.field.right, y), self.size))
+                             self.field.fit_on_screen(Point(self.field.left,  y)),
+                             self.field.fit_on_screen(Point(self.field.right, y)))
 
 
     def draw_force_field(self):
@@ -55,8 +54,8 @@ class Graphics:
                 except: pass
                 b = Point(b.x + 0.1 * force.x, b.y + 0.1 * force.y)
                 pygame.draw.line(self.screen, (0, 0, 255),
-                                 self.field.fit_in_rect(a, self.size),
-                                 self.field.fit_in_rect(b, self.size))
+                                 self.field.fit_on_screen(a),
+                                 self.field.fit_on_screen(b))
 
 
     def render(self, bots, targets = None):
@@ -70,10 +69,10 @@ class Graphics:
         if targets is not None:
             for target in targets:
                 pygame.draw.circle(self.screen, YELLOW,
-                                   self.field.fit_in_rect(target, self.size),
+                                   self.field.fit_on_screen(target, self.size),
                                    TARGET_RADIUS, 1)
         for obj in bots:
             pygame.draw.circle(self.screen, RED,
-                               self.field.fit_in_rect(obj.pos, self.size),
-                               self.field.scale(obj.radius, self.size), 1)
+                               self.field.fit_on_screen(obj.pos),
+                               self.field.scale(obj.radius), 1)
         pygame.display.flip()
