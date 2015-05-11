@@ -50,8 +50,8 @@ class Graphics:
                                self.field.fit_on_screen(target),
                                TARGET_RADIUS, 1)
         
-        for obj in bots:
+        for bot in bots:
             pygame.draw.circle(self.screen, RED,
-                               self.field.fit_on_screen(obj.pos),
-                               self.field.scale(obj.radius), 1)
+                               self.field.fit_on_screen(bot.real.pos),
+                               self.field.scale(bot.virtual.radius), 1)
         pygame.display.flip()

@@ -13,7 +13,6 @@ from common.bot import Bot
 
 FRAMERATE = 40
 
-BORDER_REFLECT = False
 VELOCITY_CAP = 0.001
 
 FIELD_W = 10.0
@@ -28,17 +27,16 @@ def main():
     size = (1910, 1040)
     field = Field((0.01 * size[0], 0.01 * size[1]), size)
     graph = Graphics(field, size)
-    eng = engine.Engine(field, VELOCITY_CAP,
-                               BORDER_REFLECT)
+    eng = engine.Engine(field, VELOCITY_CAP)
 
-    eng.bots.append(Bot(pos = ( 3.0,  0.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
-    eng.bots.append(Bot(pos = (-3.0, -1.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
-    eng.bots.append(Bot(pos = (-5.0,  0.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
-    eng.bots.append(Bot(pos = (-5.0, -1.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
-    eng.bots.append(Bot(pos = (-6.0,  0.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
-    eng.bots.append(Bot(pos = (-6.0, -1.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
-    eng.bots.append(Bot(pos = (-7.0,  0.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
-    eng.bots.append(Bot(pos = (-7.0,  1.0), vel = (0.0, 0.0), movement = MOVEMENT_LAW))
+    eng.bots.append(Bot(pos=( 3.0,  0.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
+    eng.bots.append(Bot(pos=(-3.0, -1.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
+    eng.bots.append(Bot(pos=(-5.0,  0.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
+    eng.bots.append(Bot(pos=(-5.0, -1.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
+    eng.bots.append(Bot(pos=(-6.0,  0.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
+    eng.bots.append(Bot(pos=(-6.0, -1.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
+    eng.bots.append(Bot(pos=(-7.0,  0.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
+    eng.bots.append(Bot(pos=(-7.0,  1.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
 
     eng.targets.append(Point(4.5, 1.0))
 
@@ -51,8 +49,9 @@ def main():
         delta_time = clock.tick(FRAMERATE)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                finished = True;
-        eng.update(delta_time)
+                finished = True
+        eng.update_bots()
+        eng.update_physics(delta_time)
         time = 0.001 * pygame.time.get_ticks()
         #eng.targets[0] = Point(math.cos(2 * time),
         #                       math.sin(2 * time))
