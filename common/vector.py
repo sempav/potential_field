@@ -15,6 +15,9 @@ def normalize(v):
 def dot(a, b):
     return a[0] * b[0] + a[1] * b[1]
 
+def cross(a, b):
+    return a[0] * b[1] - a[1] * b[0]
+
 
 # define a vector class with proper operations
 

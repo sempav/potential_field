@@ -13,10 +13,8 @@ class Movement(enum.Enum):
 
 class Engine():
 
-    def __init__(self, field, velocity_cap):
+    def __init__(self, field):
         self.field = field
-
-        self.velocity_cap = velocity_cap
 
         self.bots = []
         self.obstacles = []

@@ -15,7 +15,7 @@ def quadratic(r):
 
 
 def inverse_quadratic(r):
-    if r > 1.0:
+    if r > 1.5:
         return 0
     return 0.5 / (r * r)
 

@@ -8,12 +8,11 @@ from common import engine, vector, potential, obstacle
 from common.vector import Point, Vector, length, normalize
 from common.graphics import Graphics
 from common.field import Field
-from common.bot import Bot
+from common.bot import Bot, GlobalVirtualBot
 
 
-FRAMERATE = 40
-
-VELOCITY_CAP = 0.001
+FRAMERATE = 80
+FRAMES_PER_BOT_UPDATE = 1
 
 FIELD_W = 10.0
 FIELD_H = 10.0
@@ -27,30 +26,41 @@ def main():
     size = (1910, 1040)
     field = Field((0.01 * size[0], 0.01 * size[1]), size)
     graph = Graphics(field, size)
-    eng = engine.Engine(field, VELOCITY_CAP)
+    eng = engine.Engine(field)
 
-    eng.bots.append(Bot(pos=( 3.0,  0.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
-    eng.bots.append(Bot(pos=(-3.0, -1.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
-    eng.bots.append(Bot(pos=(-5.0,  0.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
-    eng.bots.append(Bot(pos=(-5.0, -1.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
-    eng.bots.append(Bot(pos=(-6.0,  0.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
-    eng.bots.append(Bot(pos=(-6.0, -1.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
-    eng.bots.append(Bot(pos=(-7.0,  0.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
-    eng.bots.append(Bot(pos=(-7.0,  1.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW))
+    eng.bots.append(Bot(GlobalVirtualBot(pos=( 5.0,  0.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW)))
+    eng.bots.append(Bot(GlobalVirtualBot(pos=(-3.0, -1.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW)))
+    eng.bots.append(Bot(GlobalVirtualBot(pos=(-5.0,  0.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW)))
+    eng.bots.append(Bot(GlobalVirtualBot(pos=(-5.0, 1.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW)))
+    eng.bots.append(Bot(GlobalVirtualBot(pos=(-6.0,  0.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW)))
+    eng.bots.append(Bot(GlobalVirtualBot(pos=(-6.0, -1.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW)))
+    eng.bots.append(Bot(GlobalVirtualBot(pos=(-7.0,  0.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW)))
+    eng.bots.append(Bot(GlobalVirtualBot(pos=(-7.0,  1.0), vel=(0.0, 0.0), movement=MOVEMENT_LAW)))
 
     eng.targets.append(Point(4.5, 1.0))
 
-    eng.obstacles.append(obstacle.create_obstacle_circle(Point(1.25, 0.5), 1.1))
-    eng.obstacles.append(obstacle.create_obstacle_circle(Point(-1.25, 0.0), 0.2))
+    #eng.obstacles.append(obstacle.create_obstacle_circle(Point(1.25, 0.5), 1.1))
+    #eng.obstacles.append(obstacle.create_obstacle_circle(Point(-1.25, 0.0), 0.2))
+    eng.obstacles.extend(obstacle.polygon_to_obstacles([Point(1, -3),
+                                                        Point(3, -3),
+                                                        Point(3,  3),
+                                                        Point(1,  3),
+                                                        Point(1,  2),
+                                                        Point(2,  2),
+                                                        Point(2, -2),
+                                                        Point(1, -2)]))
 
     finished = False
     clock = pygame.time.Clock()
+    iter_counter = 1
     while not finished:
         delta_time = clock.tick(FRAMERATE)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 finished = True
-        eng.update_bots()
+        iter_counter += 1
+        if iter_counter % FRAMES_PER_BOT_UPDATE == 0:
+            eng.update_bots()
         eng.update_physics(delta_time)
         time = 0.001 * pygame.time.get_ticks()
         #eng.targets[0] = Point(math.cos(2 * time),

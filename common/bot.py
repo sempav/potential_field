@@ -5,49 +5,26 @@ import potential
 
 FORCE_SENSITIVITY = 1e-4
 BOT_RADIUS = 0.3
-BOT_ACCEL_CAP = 1e-3
-BOT_VEL_CAP = 1e+3
+BOT_ACCEL_CAP = 1e-5
+BOT_VEL_CAP = 1e-3
 
 
 class VirtualBot():
+    """
+    "Abstract" base class for a virtual bot.
+
+    Any concrete subclass must redefine calc_desired_velocity.
+    """
+
     def __init__(self, pos = (0, 0), vel = (0, 0), movement = Movement.Accel):
         self.pos = Point(*pos)
         self.vel = Vector(*vel)
         self.movement = movement
         self.radius = BOT_RADIUS
 
+
     def calc_desired_velocity(self, bots, obstacles, targets):
-        vel = self.vel
-        if self.movement != Movement.Accel:
-            vel = Vector(0, 0)
-        for inter in bots:
-            impulse = -FORCE_SENSITIVITY * potential.gradient(potential.morse,
-                                              lambda pos: dist(inter.real.pos, pos),
-                                              self.pos,
-                                              inter.real.pos - self.pos,
-                                              self.radius + inter.virtual.radius)
-            vel += impulse
-
-        for target in targets:
-            impulse = FORCE_SENSITIVITY * potential.gradient(potential.quadratic,
-                                             lambda pos: dist(target, pos),
-                                             self.pos,
-                                             target - self.pos,
-                                             0)
-            vel += impulse
-
-        for obstacle in obstacles:
-            impulse = -FORCE_SENSITIVITY * potential.gradient(potential.inverse_quadratic,
-                                              obstacle.distance,
-                                              self.pos,
-                                              obstacle.center - self.pos,
-                                              self.radius)
-            vel += impulse
-
-        if self.movement == Movement.Dir:
-            if length(vel) > 0:
-                vel = normalize(vel)
-        return vel
+        raise NotImplemented
 
 
     def update_vel(self, bots, obstacles, targets):
@@ -80,6 +57,41 @@ class PhysicalBot():
 
 
 class Bot():
-    def __init__(self, pos = (0, 0), vel = (0, 0), movement = Movement.Accel):
-        self.virtual = VirtualBot(pos, vel, movement)
-        self.real = PhysicalBot(pos, vel)
+    def __init__(self, virtual_bot):
+        self.virtual = virtual_bot
+        self.real = PhysicalBot(self.virtual.pos, self.virtual.vel)
+
+
+class GlobalVirtualBot(VirtualBot):
+    def calc_desired_velocity(self, bots, obstacles, targets):
+        vel = self.vel
+        if self.movement != Movement.Accel:
+            vel = Vector(0, 0)
+        for inter in bots:
+            impulse = -FORCE_SENSITIVITY * potential.gradient(potential.morse,
+                                              lambda pos: dist(inter.real.pos, pos),
+                                              self.pos,
+                                              inter.real.pos - self.pos,
+                                              self.radius + inter.virtual.radius)
+            vel += impulse
+
+        for target in targets:
+            impulse = FORCE_SENSITIVITY * potential.gradient(potential.quadratic,
+                                             lambda pos: dist(target, pos),
+                                             self.pos,
+                                             target - self.pos,
+                                             0)
+            vel += impulse
+
+        for obstacle in obstacles:
+            impulse = -FORCE_SENSITIVITY * potential.gradient(potential.inverse_quadratic,
+                                              obstacle.distance,
+                                              self.pos,
+                                              obstacle.repulsion_dir(self.pos),
+                                              self.radius)
+            vel += impulse
+
+        if self.movement == Movement.Dir:
+            if length(vel) > 0:
+                vel = normalize(vel)
+        return vel
