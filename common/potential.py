@@ -3,21 +3,18 @@ import math
 from vector import dist
 
 
-def morse(r):
-    d0 = 1.5
-    k = 1.5
-    a = 1.5
+def morse(r, d0, k, a):
     return k * (1 - math.exp(-a * (r - d0)))**2
 
+def linear(r, k=1.0):
+    return k * r
 
-def quadratic(r):
-    return -0.5 * r
+def quadratic(r, k=1.0):
+    return k * r * r
 
 
-def inverse_quadratic(r):
-    if r > 1.5:
-        return 0
-    return 0.5 / (r * r)
+def inverse_quadratic(r, k=1.0):
+    return k / (r * r)
 
 
 def gradient(distance_potential, dist_fun, pos, direction, thickness):

@@ -23,7 +23,7 @@ class Engine():
 
     def update_bots(self):
         for bot in self.bots:
-            bot.virtual.sync_to_reality(bot.real)
+            bot.virtual.sync_to_real(bot.real)
 
         for bot in self.bots:
             bot.virtual.update_vel(self.bots, self.obstacles, self.targets)

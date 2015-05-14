@@ -1,27 +1,21 @@
 from vector import Vector, Point, dist, length, normalize
 from engine import Movement
-import potential
 
 
-FORCE_SENSITIVITY = 1e-4
 BOT_RADIUS = 0.3
 BOT_ACCEL_CAP = 1e-5
 BOT_VEL_CAP = 1e-3
 
+OBSTACLE_SENSING_DISTANCE = 5 * BOT_RADIUS
+KNOW_BOT_POSITIONS = False
 
-class VirtualBot():
+
+class BehaviorBase():
     """
-    "Abstract" base class for a virtual bot.
+    "Abstract" base class for movement logic.
 
     Any concrete subclass must redefine calc_desired_velocity.
     """
-
-    def __init__(self, pos = (0, 0), vel = (0, 0), movement = Movement.Accel):
-        self.pos = Point(*pos)
-        self.vel = Vector(*vel)
-        self.movement = movement
-        self.radius = BOT_RADIUS
-
 
     def calc_desired_velocity(self, bots, obstacles, targets):
         raise NotImplemented
@@ -31,7 +25,7 @@ class VirtualBot():
         self.vel = self.calc_desired_velocity(bots, obstacles, targets)
 
 
-    def sync_to_reality(self, real):
+    def sync_to_real(self, real):
         self.pos = real.pos
         self.vel = real.vel
 
@@ -57,41 +51,7 @@ class PhysicalBot():
 
 
 class Bot():
-    def __init__(self, virtual_bot):
-        self.virtual = virtual_bot
-        self.real = PhysicalBot(self.virtual.pos, self.virtual.vel)
-
-
-class GlobalVirtualBot(VirtualBot):
-    def calc_desired_velocity(self, bots, obstacles, targets):
-        vel = self.vel
-        if self.movement != Movement.Accel:
-            vel = Vector(0, 0)
-        for inter in bots:
-            impulse = -FORCE_SENSITIVITY * potential.gradient(potential.morse,
-                                              lambda pos: dist(inter.real.pos, pos),
-                                              self.pos,
-                                              inter.real.pos - self.pos,
-                                              self.radius + inter.virtual.radius)
-            vel += impulse
-
-        for target in targets:
-            impulse = FORCE_SENSITIVITY * potential.gradient(potential.quadratic,
-                                             lambda pos: dist(target, pos),
-                                             self.pos,
-                                             target - self.pos,
-                                             0)
-            vel += impulse
-
-        for obstacle in obstacles:
-            impulse = -FORCE_SENSITIVITY * potential.gradient(potential.inverse_quadratic,
-                                              obstacle.distance,
-                                              self.pos,
-                                              obstacle.repulsion_dir(self.pos),
-                                              self.radius)
-            vel += impulse
-
-        if self.movement == Movement.Dir:
-            if length(vel) > 0:
-                vel = normalize(vel)
-        return vel
+    def __init__(self, pos, vel, behavior):
+        self.virtual = behavior
+        self.real = PhysicalBot(Point(*pos), Vector(*vel))
+        self.virtual.sync_to_real(self.real)

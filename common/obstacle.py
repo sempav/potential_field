@@ -15,7 +15,7 @@ class Obstacle():
 def draw_circle(screen, field, center, radius):
     pygame.draw.circle(screen, OBSTACLE_COLOR,
                        field.fit_on_screen(center),
-                       field.scale(radius), 1)
+                       field.scale(radius), 2)
 
 
 def edges(vertices):
@@ -31,7 +31,7 @@ def edges(vertices):
 def draw_segment(screen, field, a, b):
     pygame.draw.line(screen, OBSTACLE_COLOR,
                      field.fit_on_screen(a),
-                     field.fit_on_screen(b))
+                     field.fit_on_screen(b), 2)
 
 
 def draw_polygon(screen, field, vertices):

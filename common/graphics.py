@@ -2,20 +2,17 @@ import pygame
 
 from vector import Point
 
-RED = 255, 0, 0
-GREEN = 0, 255, 0
-BLUE = 0, 0, 255
-YELLOW = 255, 255, 0
-WHITE = 255, 255, 255
-
 GRID_COLOR = 100,100,100
 AXES_COLOR = 155,155,155
 OBSTACLE_COLOR = 0,140,0
+BOT_COLOR = 255,0,0
+TARGET_COLOR=255,255,0
+SENSOR_COLOR=50,50,155
 
 TARGET_RADIUS = 5
 
 DRAW_COORD_GRID = True
-DRAW_FORCE_FIELD = True
+DRAW_SENSING_AREA = True
 
 
 class Graphics:
@@ -46,12 +43,19 @@ class Graphics:
             obstacle.draw(self.screen, self.field)
 
         for target in targets:
-            pygame.draw.circle(self.screen, YELLOW,
+            pygame.draw.circle(self.screen, TARGET_COLOR,
                                self.field.fit_on_screen(target),
                                TARGET_RADIUS, 1)
         
+        if DRAW_SENSING_AREA:
+            for bot in bots:
+                pygame.draw.circle(self.screen, SENSOR_COLOR,
+                                   self.field.fit_on_screen(bot.real.pos),
+                                   self.field.scale(bot.virtual.obstacle_sensing_distance),
+                                   1)
         for bot in bots:
-            pygame.draw.circle(self.screen, RED,
+            pygame.draw.circle(self.screen, BOT_COLOR,
                                self.field.fit_on_screen(bot.real.pos),
                                self.field.scale(bot.virtual.radius), 1)
+
         pygame.display.flip()
