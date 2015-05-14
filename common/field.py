@@ -38,6 +38,11 @@ class Field:
                       int(rb + rh * (1.0 - (pos.y - self.bottom) / self.height)))
 
 
+    def screen_to_field(self, pos):
+        return Vector(self.left + self.width * pos[0] / self.resolution[0],
+                      self.top - self.height * pos[1] / self.resolution[1])
+
+
     def scale(self, dist):
         if abs(self.resolution[0] / self.width - self.resolution[1] / self.height) > EPSILON:
             raise RuntimeError("Field has non-uniform scale")

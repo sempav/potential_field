@@ -20,6 +20,7 @@ class Graphics:
         self.field = field
         self.size = size
         self.screen = pygame.display.set_mode(size)
+        pygame.display.set_caption("potential")
 
 
     def draw_coordinate_grid(self, num = (10,10)):

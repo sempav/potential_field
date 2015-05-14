@@ -15,34 +15,23 @@ from common import behavior
 FRAMERATE = 60
 FRAMES_PER_BOT_UPDATE = 1
 
-FIELD_W = 10.0
-FIELD_H = 10.0
-QUANT_W = 1000
-QUANT_H = 1000
 
-MOVEMENT_LAW = engine.Movement.Speed
+def reset(eng, trap, group, movement=engine.Movement.Speed):
+    eng.bots = []
+    eng.obstacles = []
+    eng.targets = []
 
-TRAP = False
+    if group:
+        eng.bots.append(Bot(pos=( 5.0,  0.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
+        eng.bots.append(Bot(pos=(-3.0, -1.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
+        eng.bots.append(Bot(pos=(-5.0,  0.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
+        eng.bots.append(Bot(pos=(-5.0,  1.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
+        eng.bots.append(Bot(pos=(-6.0,  0.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
+        eng.bots.append(Bot(pos=(-6.0, -1.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
+        eng.bots.append(Bot(pos=(-7.0,  0.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
+    eng.bots.append(Bot(pos=(-7.0,  1.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
 
-
-def main():
-    size = (1910, 1040)
-    field = Field((0.01 * size[0], 0.01 * size[1]), size)
-    graph = Graphics(field, size)
-    eng = engine.Engine(field)
-
-    eng.bots.append(Bot(pos=( 5.0,  0.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement=MOVEMENT_LAW)))
-    eng.bots.append(Bot(pos=(-3.0, -1.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement=MOVEMENT_LAW)))
-    eng.bots.append(Bot(pos=(-5.0,  0.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement=MOVEMENT_LAW)))
-    eng.bots.append(Bot(pos=(-5.0,  1.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement=MOVEMENT_LAW)))
-    eng.bots.append(Bot(pos=(-6.0,  0.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement=MOVEMENT_LAW)))
-    eng.bots.append(Bot(pos=(-6.0, -1.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement=MOVEMENT_LAW)))
-    eng.bots.append(Bot(pos=(-7.0,  0.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement=MOVEMENT_LAW)))
-    eng.bots.append(Bot(pos=(-7.0,  1.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement=MOVEMENT_LAW)))
-
-    eng.targets.append(Point(4.5, 1.0))
-
-    if TRAP:
+    if trap:
         eng.obstacles.extend(obstacle.polygon_to_obstacles([Point(0, -3),
                                                             Point(3, -3),
                                                             Point(3,  3),
@@ -55,21 +44,65 @@ def main():
         eng.obstacles.append(obstacle.create_obstacle_circle(Point(1.25, 0.5), 1.1))
         eng.obstacles.append(obstacle.create_obstacle_circle(Point(-1.25, 0.0), 0.2))
 
+    eng.targets.append(Point(4.5, 1.0))
+
+
+def main():
+    pygame.display.init()
+    info = pygame.display.Info()
+    size = (info.current_w, info.current_h)
+    field = Field((0.01 * size[0], 0.01 * size[1]), size)
+    graph = Graphics(field, size)
+    eng = engine.Engine(field)
+
+    cur_group = True
+    cur_trap = False
+    cur_movement = engine.Movement.Speed
+    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
+
     finished = False
     clock = pygame.time.Clock()
     iter_counter = 1
+
     while not finished:
         delta_time = clock.tick(FRAMERATE)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 finished = True
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    cur_movement = engine.Movement.Accel
+                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
+                elif event.key == pygame.K_2:
+                    cur_movement = engine.Movement.Speed
+                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
+                elif event.key == pygame.K_3:
+                    cur_movement = engine.Movement.Dir
+                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
+                elif event.key == pygame.K_q:
+                    cur_trap = False
+                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
+                elif event.key == pygame.K_w:
+                    cur_trap = True
+                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
+                elif event.key == pygame.K_a:
+                    cur_group = True
+                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
+                elif event.key == pygame.K_s:
+                    cur_group = False
+                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
+
         iter_counter += 1
         if iter_counter % FRAMES_PER_BOT_UPDATE == 0:
             eng.update_bots()
         eng.update_physics(delta_time)
-        time = 0.001 * pygame.time.get_ticks()
-        #eng.targets[0] = Point(math.cos(2 * time),
+
+        mouse_pos = pygame.mouse.get_pos()
+        eng.targets[0] = field.screen_to_field(mouse_pos)
+        #time = 0.001 * pygame.time.get_ticks()
+        #eng.targets[0] = Point(math.cos(2 * time) + 2 * math.sin(time),
         #                       math.sin(2 * time))
+
         graph.render(bots = eng.bots,
                      obstacles = eng.obstacles,
                      targets = eng.targets)

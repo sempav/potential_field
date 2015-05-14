@@ -64,5 +64,6 @@ def numerical_gradient(distance_potential, dist_fun, pos, direction, thickness):
 
 
 def gradient(distance_potential, dist_fun, pos, direction, thickness):
+    # use sympy, perhaps?
     coeff = distance_potential.derivative(dist_fun(pos) - thickness)
     return direction * coeff
