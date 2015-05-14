@@ -23,11 +23,11 @@ class Graphics:
 
 
     def draw_coordinate_grid(self, num = (10,10)):
-        for x in xrange(int(self.field.left), int(self.field.right), 1):
+        for x in xrange(int(self.field.left), 1 + int(self.field.right), 1):
             pygame.draw.line(self.screen, GRID_COLOR if x != 0 else AXES_COLOR,
                              self.field.fit_on_screen(Point(x, self.field.bottom)),
                              self.field.fit_on_screen(Point(x, self.field.top)))
-        for y in xrange(int(self.field.bottom), int(self.field.top), 1):
+        for y in xrange(int(self.field.bottom), 1 + int(self.field.top), 1):
             pygame.draw.line(self.screen, GRID_COLOR if y != 0 else AXES_COLOR,
                              self.field.fit_on_screen(Point(self.field.left,  y)),
                              self.field.fit_on_screen(Point(self.field.right, y)))

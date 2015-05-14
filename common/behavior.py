@@ -1,6 +1,8 @@
 from functools import partial
 
-from bot import BehaviorBase, BOT_RADIUS, OBSTACLE_SENSING_DISTANCE, KNOW_BOT_POSITIONS
+from bot import BehaviorBase, BOT_RADIUS, \
+                OBSTACLE_SENSING_DISTANCE, KNOW_BOT_POSITIONS, \
+                OBSTACLE_CLEARANCE
 from engine import Movement
 import potential
 from vector import Vector, length, normalize, dist
@@ -22,17 +24,17 @@ class Basic(BehaviorBase):
         if self.movement != Movement.Accel:
             vel = Vector(0, 0)
         for inter in bots:
-            if (not KNOW_BOT_POSITIONS) and dist(inter.real.pos, self.pos) > self.obstacle_sensing_distance:
-                continue
-            force = -potential.gradient(partial(potential.morse, d0=2 * BOT_RADIUS, k=2.5, a=5.0),
+            #if (not KNOW_BOT_POSITIONS) and dist(inter.real.pos, self.pos) > self.obstacle_sensing_distance:
+            #    continue
+            force = -potential.gradient(potential.morse(r0=2 * BOT_RADIUS, k=2.5, a=4.0),
                                               lambda pos: dist(inter.real.pos, pos),
                                               self.pos,
-                                              inter.real.pos - self.pos,
+                                              self.pos - inter.real.pos,
                                               self.radius + inter.virtual.radius)
             vel += FORCE_SENSITIVITY * force
 
         for target in targets:
-            force = -potential.gradient(partial(potential.linear, k=2.0),
+            force = -potential.gradient(potential.linear(k=-2.0),
                                              lambda pos: dist(target, pos),
                                              self.pos,
                                              target - self.pos,
@@ -41,11 +43,12 @@ class Basic(BehaviorBase):
 
         for obstacle in obstacles:
             if obstacle.distance(self.pos) <= self.obstacle_sensing_distance:
-                force = -potential.gradient(partial(potential.inverse_quadratic, k=0.5),
+                force = -potential.gradient(potential.inverse_quadratic(k=1.0),
                                                   obstacle.distance,
                                                   self.pos,
                                                   obstacle.repulsion_dir(self.pos),
-                                                  self.radius)
+                                                  OBSTACLE_CLEARANCE + self.radius)
+                #assert(obstacle.distance(self.pos) <= obstacle.distance(self.pos + 0.01 * normalize(force)))
                 vel += FORCE_SENSITIVITY * force
 
         if self.movement == Movement.Dir:

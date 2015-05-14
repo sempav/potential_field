@@ -44,7 +44,7 @@ def draw_polygon(screen, field, vertices):
 def distance_to_segment(point, a, b):
     if dot(b - a, point - a) <= 0 or dot(a - b, point - b) <= 0:
         return min(dist(point, a), dist(point, b))
-    return cross(point - a, normalize(b - a))
+    return abs(cross(point - a, normalize(b - a)))
 
 
 def dir_from_segment(point, a, b):
@@ -56,6 +56,7 @@ def dir_from_segment(point, a, b):
     normal = Vector(-normal.y, normal.x)
     if dot(normal, point - a) < 0:
         normal = -normal
+    assert(distance_to_segment(point, a, b) < distance_to_segment(point + normal, a, b))
     return normal
 
 
