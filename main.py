@@ -22,6 +22,8 @@ QUANT_H = 1000
 
 MOVEMENT_LAW = engine.Movement.Speed
 
+TRAP = False
+
 
 def main():
     size = (1910, 1040)
@@ -40,16 +42,18 @@ def main():
 
     eng.targets.append(Point(4.5, 1.0))
 
-    #eng.obstacles.append(obstacle.create_obstacle_circle(Point(1.25, 0.5), 1.1))
-    #eng.obstacles.append(obstacle.create_obstacle_circle(Point(-1.25, 0.0), 0.2))
-    eng.obstacles.extend(obstacle.polygon_to_obstacles([Point(0, -3),
-                                                        Point(3, -3),
-                                                        Point(3,  3),
-                                                        Point(0,  3),
-                                                        Point(0,  2),
-                                                        Point(2,  2),
-                                                        Point(2, -2),
-                                                        Point(0, -2)]))
+    if TRAP:
+        eng.obstacles.extend(obstacle.polygon_to_obstacles([Point(0, -3),
+                                                            Point(3, -3),
+                                                            Point(3,  3),
+                                                            Point(0,  3),
+                                                            Point(0,  2),
+                                                            Point(2,  2),
+                                                            Point(2, -2),
+                                                            Point(0, -2)]))
+    else:
+        eng.obstacles.append(obstacle.create_obstacle_circle(Point(1.25, 0.5), 1.1))
+        eng.obstacles.append(obstacle.create_obstacle_circle(Point(-1.25, 0.0), 0.2))
 
     finished = False
     clock = pygame.time.Clock()

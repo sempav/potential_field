@@ -24,8 +24,8 @@ class Basic(BehaviorBase):
         if self.movement != Movement.Accel:
             vel = Vector(0, 0)
         for inter in bots:
-            #if (not KNOW_BOT_POSITIONS) and dist(inter.real.pos, self.pos) > self.obstacle_sensing_distance:
-            #    continue
+            if (not KNOW_BOT_POSITIONS) and dist(inter.real.pos, self.pos) > self.obstacle_sensing_distance:
+                continue
             force = -potential.gradient(potential.morse(r0=2 * BOT_RADIUS, k=2.5, a=4.0),
                                               lambda pos: dist(inter.real.pos, pos),
                                               self.pos,
@@ -48,7 +48,6 @@ class Basic(BehaviorBase):
                                                   self.pos,
                                                   obstacle.repulsion_dir(self.pos),
                                                   OBSTACLE_CLEARANCE + self.radius)
-                #assert(obstacle.distance(self.pos) <= obstacle.distance(self.pos + 0.01 * normalize(force)))
                 vel += FORCE_SENSITIVITY * force
 
         if self.movement == Movement.Dir:
