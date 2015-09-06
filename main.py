@@ -3,13 +3,13 @@
 
 import math
 import pygame
+import os
 
-from common import engine, vector, potential, obstacle
+from common import engine, vector, potential, obstacle, behavior
 from common.vector import Point, Vector, length, normalize
 from common.graphics import Graphics
 from common.field import Field
 from common.bot import Bot
-from common import behavior
 
 
 FRAMERATE = 60
@@ -48,9 +48,11 @@ def reset(eng, trap, group, movement=engine.Movement.Speed):
 
 
 def main():
+    os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (1,20)
+
     pygame.display.init()
     info = pygame.display.Info()
-    size = (info.current_w, info.current_h)
+    size = (info.current_w - 1, info.current_h - 20)
     field = Field((0.01 * size[0], 0.01 * size[1]), size)
     graph = Graphics(field, size)
     eng = engine.Engine(field)
