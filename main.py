@@ -5,11 +5,11 @@ import math
 import pygame
 import os
 
-from common import engine, vector, potential, obstacle, behavior
-from common.vector import Point, Vector, length, normalize
-from common.graphics import Graphics
-from common.field import Field
-from common.bot import Bot
+import engine, vector, potential, obstacle, behavior
+from vector import Point, Vector, length, normalize
+from graphics import Graphics
+from field import Field
+from bot import Bot
 
 
 FRAMERATE = 60
