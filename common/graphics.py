@@ -58,5 +58,3 @@ class Graphics:
             pygame.draw.circle(self.screen, BOT_COLOR,
                                self.field.fit_on_screen(bot.real.pos),
                                self.field.scale(bot.virtual.radius), 1)
-
-        pygame.display.flip()

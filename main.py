@@ -108,6 +108,7 @@ def main():
         graph.render(bots = eng.bots,
                      obstacles = eng.obstacles,
                      targets = eng.targets)
+        pygame.display.flip()
 
     pygame.quit()
 
