@@ -2,20 +2,33 @@ import pygame
 from functools import partial
 from itertools import starmap
 
+import shapes
 from graphics import OBSTACLE_COLOR
 from vector import Vector, Point, dist, normalize, dot, cross
 
 class Obstacle():
-    def __init__(self, distance_field, repulsion_field, draw_fun):
+    # distance_field takes a Point and returns distance to the obstacle
+    # repulsion_field takes a Point and returns direction of the gradient of distance_field
+    def __init__(self, distance_field, repulsion_field, _shape):
         self.distance = distance_field
         self.repulsion_dir = repulsion_field
-        self.draw = draw_fun
+        self.shape = _shape
 
 
-def draw_circle(screen, field, center, radius):
-    pygame.draw.circle(screen, OBSTACLE_COLOR,
-                       field.fit_on_screen(center),
-                       field.scale(radius), 2)
+    def draw(self, screen, field):
+        self.shape.draw(screen, field, OBSTACLE_COLOR)
+
+
+    def intersect(self, ray):
+        return self.shape.intersect(ray)
+
+
+def create_obstacle_circle(center, radius):
+    o = Obstacle(lambda r: dist(r, center) - radius,
+                 lambda r: normalize(r - center),
+                 shapes.Circle(center, radius))
+    o.center = center
+    return o
 
 
 def edges(vertices):
@@ -26,12 +39,6 @@ def edges(vertices):
             yield (prev, cur)
         prev = cur
     yield (prev, vertices[0])
-
-
-def draw_segment(screen, field, a, b):
-    pygame.draw.line(screen, OBSTACLE_COLOR,
-                     field.fit_on_screen(a),
-                     field.fit_on_screen(b), 2)
 
 
 def draw_polygon(screen, field, vertices):
@@ -64,21 +71,23 @@ def distance_to_polygon(point, vertices):
     return min(map(partial(distance_to_segment, point=point), edges(vertices)))
 
 
-def create_obstacle_circle(center, radius):
-    o = Obstacle(lambda r: dist(r, center) - radius,
-                 lambda r: normalize(r - center),
-                 partial(draw_circle, center=center, radius=radius))
-    o.center = center
-    return o
+def dir_from_polygon(point, vertices):
+    _, u, v = min((distance_to_segment(point, u, v),u,v) for (u, v) in edges(vertices))
+    return dir_from_segment(point, u, v)
 
 
 def create_obstacle_segment(a, b):
     o = Obstacle(partial(distance_to_segment, a=a, b=b),
                  partial(dir_from_segment, a=a, b=b),
-                 partial(draw_segment, a=a, b=b))
+                 shapes.Segment(a, b))
     o.center = 0.5 * (a + b)
-    return  o
+    return o
 
 
 def polygon_to_obstacles(vertices):
     return starmap(create_obstacle_segment, edges(vertices))
+
+def create_obstacle_polygon(vertices):
+    o = Obstacle(partial(distance_to_polygon, vertices=vertices),
+                 partial(dir_from_polygon, vertices=vertices),
+                 shapes.Polygon(vertices))

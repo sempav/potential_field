@@ -15,6 +15,19 @@ DRAW_COORD_GRID = True
 DRAW_SENSING_AREA = True
 
 
+def draw_circle(screen, field, color, center, radius):
+    pygame.draw.circle(screen, color,
+                       field.fit_on_screen(center),
+                       field.scale(radius), 2)
+
+
+def draw_line(screen, field, color, a, b, thickness=2):
+    pygame.draw.line(screen, color,
+                     field.fit_on_screen(a),
+                     field.fit_on_screen(b),
+                     thickness)
+
+
 class Graphics:
     def __init__(self, field, size = (1024, 768)):
         self.field = field
