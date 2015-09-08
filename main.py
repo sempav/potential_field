@@ -47,10 +47,24 @@ def reset(eng, trap, group, movement=engine.Movement.Speed):
     eng.targets.append(Point(4.5, 1.0))
 
 
+def show_state(movement):
+    if movement == engine.Movement.Accel:
+        return "Acceleration mode"
+    elif movement == engine.Movement.Speed:
+        return "Velocity mode"
+    else:
+        return "Direction mode"
+
+
 def main():
     os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (1,20)
 
-    pygame.display.init()
+    pygame.init()
+
+    #font = pygame.font.Font(None, 30)
+    font = pygame.font.SysFont("Arial", 25)
+
+    #pygame.display.init()
     info = pygame.display.Info()
     size = (info.current_w - 1, info.current_h - 20)
     field = Field((0.01 * size[0], 0.01 * size[1]), size)
@@ -108,6 +122,11 @@ def main():
         graph.render(bots = eng.bots,
                      obstacles = eng.obstacles,
                      targets = eng.targets)
+
+        text = show_state(cur_movement)
+        ren = font.render(text, 0, (255, 255, 255))
+        text_size = font.size(text)
+        graph.screen.blit(ren, (30, graph.size[1] - text_size[1]))
         pygame.display.flip()
 
     pygame.quit()
