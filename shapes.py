@@ -16,7 +16,7 @@ class Ray():
 # returns None if the ray doesn't intersect with any objects
 def first_intersection(ray, objects):
     # build a list of all intersections and remove Nones
-    ps = map(lambda e: e.intersect(ray), self.edges)
+    ps = [e.intersect(ray) for e in objects]
     ps = [p for p in ps if p is not None]
     try:
         # select the point closest to ray.orig
