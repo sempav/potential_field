@@ -1,6 +1,6 @@
 import math
 
-from vector import dist
+from vector import Vector, dist, normalize
 
 
 class morse():
@@ -60,10 +60,16 @@ def numerical_gradient(distance_potential, dist_fun, pos, direction, thickness):
     here  = distance_potential(dist_fun(pos) - thickness)
     there = distance_potential(dist_fun(pos + eps * direction) - thickness)
     coeff = (there - here) / eps
-    return direction * coeff
+    try:
+        return normalize(direction) * coeff
+    except ZeroDivisionError:
+        return Vector(0.0, 0.0)
 
 
 def gradient(distance_potential, dist_fun, pos, direction, thickness):
     # use sympy, perhaps?
     coeff = distance_potential.derivative(dist_fun(pos) - thickness)
-    return direction * coeff
+    try:
+        return normalize(direction) * coeff
+    except ZeroDivisionError:
+        return Vector(0.0, 0.0)
