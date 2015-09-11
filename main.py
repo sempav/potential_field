@@ -5,7 +5,8 @@ import math
 import pygame
 import os
 
-import engine, vector, potential, obstacle, behavior
+import engine, vector, potential, obstacle
+import behaviors
 from vector import Point, Vector, length, normalize
 from graphics import Graphics
 from field import Field
@@ -22,14 +23,14 @@ def reset(eng, trap, group, movement=engine.Movement.Speed):
     eng.targets = []
 
     if group:
-        eng.bots.append(Bot(pos=( 5.0,  0.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
-        eng.bots.append(Bot(pos=(-3.0, -1.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
-        eng.bots.append(Bot(pos=(-5.0,  0.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
-        eng.bots.append(Bot(pos=(-5.0,  1.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
-        eng.bots.append(Bot(pos=(-6.0,  0.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
-        eng.bots.append(Bot(pos=(-6.0, -1.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
-        eng.bots.append(Bot(pos=(-7.0,  0.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
-    eng.bots.append(Bot(pos=(-7.0,  1.0), vel=(0.0, 0.0), behavior=behavior.Basic(movement)))
+        eng.bots.append(Bot(pos=( 5.0,  0.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
+        eng.bots.append(Bot(pos=(-3.0, -1.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
+        eng.bots.append(Bot(pos=(-5.0,  0.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
+        eng.bots.append(Bot(pos=(-5.0,  1.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
+        eng.bots.append(Bot(pos=(-6.0,  0.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
+        eng.bots.append(Bot(pos=(-6.0, -1.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
+        eng.bots.append(Bot(pos=(-7.0,  0.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
+    eng.bots.append(Bot(pos=(-7.0,  1.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
 
     if trap:
         eng.obstacles.extend(obstacle.polygon_to_obstacles([Point(0, -3),
