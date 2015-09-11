@@ -13,6 +13,19 @@ class Ray():
         return shape.intersect(self)
 
 
+# returns None if the ray doesn't intersect with any objects
+def first_intersection(ray, objects):
+    # build a list of all intersections and remove Nones
+    ps = map(lambda e: e.intersect(ray), self.edges)
+    ps = [p for p in ps if p is not None]
+    try:
+        # select the point closest to ray.orig
+        p = min(ps, key=lambda p: length(p - ray.orig))
+        return p
+    except ValueError:
+        return None
+
+
 class Circle():
     def __init__(self, _center, _radius):
         self.center = _center
@@ -79,15 +92,7 @@ class Polygon():
 
     # returns the intersection that is closest to origin
     def intersect(self, ray):
-        # build a list of all intersections and remove Nones
-        ps = map(lambda e: e.intersect(ray), self.edges)
-        ps = [p for p in ps if p is not None]
-        try:
-            # select the point closest to ray.orig
-            p = min(ps, key=lambda p: length(p - ray.orig))
-            return p
-        except ValueError:
-            return None
+        return first_intersection(ray, self.edges)
 
 
     def draw(self, screen, field, color):
