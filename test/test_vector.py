@@ -7,6 +7,10 @@ class VectorTestCase(unittest.TestCase):
         self.assertAlmostEqual(vector.length(Vector(0.0, 0.0)), 0.0, geom_places)
         self.assertAlmostEqual(vector.length(Vector(1.0, 1.0)), 2**0.5, geom_places)
 
+        v = vector.normalize(Vector(0.23, 1.45))
+        self.assertAlmostEqual(vector.length(v * 23.145), 23.145)
+        self.assertAlmostEqual(vector.length(v / 23.145), 1.0/23.145)
+
 
     def testDist(self):
         self.assertAlmostEqual(vector.dist(Point(0.0, 0.0), Point(0.0, 0.0)),
@@ -40,4 +44,3 @@ class VectorTestCase(unittest.TestCase):
                                1.0, geom_places)
         self.assertAlmostEqual(vector.cross(Vector(0.0, 1.0), Vector(1.0, 0.0)),
                                -1.0, geom_places)
-        #self.assertAlmostEqual(

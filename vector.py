@@ -48,6 +48,12 @@ def __mul__(self, other):
 def __rmul__(self, other):
     return __mul__(self, other)
 
+def __div__(self, other):
+    if isinstance(other, numbers.Number):
+        return Vector(self.x / other, self.y / other)
+    else:
+        return NotImplemented
+
 def __eq__(self, other):
     return length(self - other) < geom_eps
 
@@ -59,6 +65,7 @@ Vector.__sub__ = __sub__
 Vector.__neg__ = __neg__
 Vector.__mul__ = __mul__
 Vector.__rmul__ = __rmul__
+Vector.__div__ = __div__
 Vector.__eq__ = __eq__
 Vector.__ne__ = __ne__
 
