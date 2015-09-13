@@ -27,27 +27,24 @@ class Basic(BehaviorBase):
             if (not KNOW_BOT_POSITIONS) and dist(inter.real.pos, self.pos) > self.max_sensing_distance:
                 continue
             force = -potential.gradient(potential.morse(r0=2 * BOT_RADIUS, k=2.5, a=4.0),
-                                              lambda pos: dist(inter.real.pos, pos),
-                                              self.pos,
-                                              self.pos - inter.real.pos,
-                                              self.radius + inter.virtual.radius)
+                                        dist(inter.real.pos, self.pos),
+                                        self.pos - inter.real.pos,
+                                        self.radius + inter.virtual.radius)
             vel += _FORCE_SENSITIVITY * force
 
         for target in targets:
             force = -potential.gradient(potential.linear(k=-2.0),
-                                             lambda pos: dist(target, pos),
-                                             self.pos,
-                                             target - self.pos,
-                                             0)
+                                        dist(target, self.pos),
+                                        target - self.pos,
+                                        0)
             vel += _FORCE_SENSITIVITY * force
 
         for obstacle in obstacles:
             if obstacle.distance(self.pos) <= self.max_sensing_distance:
                 force = -potential.gradient(potential.inverse_quadratic(k=1.0),
-                                                  obstacle.distance,
-                                                  self.pos,
-                                                  obstacle.repulsion_dir(self.pos),
-                                                  OBSTACLE_CLEARANCE + self.radius)
+                                            obstacle.distance(self.pos),
+                                            obstacle.repulsion_dir(self.pos),
+                                            OBSTACLE_CLEARANCE + self.radius)
                 vel += _FORCE_SENSITIVITY * force
 
         if self.movement == Movement.Dir:

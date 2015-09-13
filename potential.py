@@ -66,9 +66,9 @@ def numerical_gradient(distance_potential, dist_fun, pos, direction, thickness):
         return Vector(0.0, 0.0)
 
 
-def gradient(distance_potential, dist_fun, pos, direction, thickness):
+def gradient(distance_potential, dist, direction, thickness):
     # use sympy, perhaps?
-    coeff = distance_potential.derivative(dist_fun(pos) - thickness)
+    coeff = distance_potential.derivative(dist - thickness)
     try:
         return normalize(direction) * coeff
     except ZeroDivisionError:
