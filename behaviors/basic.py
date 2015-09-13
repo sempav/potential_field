@@ -1,22 +1,22 @@
 from functools import partial
 
 from bot import BehaviorBase, BOT_RADIUS, \
-                OBSTACLE_SENSING_DISTANCE, KNOW_BOT_POSITIONS, \
+                MAX_SENSING_DISTANCE, KNOW_BOT_POSITIONS, \
                 OBSTACLE_CLEARANCE
 from engine import Movement
 import potential
 from vector import Vector, length, normalize, dist
 
 
-_FORCE_SENSITIVITY = 1e-4
+_FORCE_SENSITIVITY = 5e-4
 
 
 class Basic(BehaviorBase):
     def __init__(self, movement = Movement.Accel,
-                 obstacle_sensing_distance = OBSTACLE_SENSING_DISTANCE):
+                 max_sensing_distance = MAX_SENSING_DISTANCE):
         self.movement = movement
         self.radius = BOT_RADIUS
-        self.obstacle_sensing_distance = obstacle_sensing_distance
+        self.max_sensing_distance = max_sensing_distance
 
 
     def calc_desired_velocity(self, bots, obstacles, targets):
@@ -24,7 +24,7 @@ class Basic(BehaviorBase):
         if self.movement != Movement.Accel:
             vel = Vector(0, 0)
         for inter in bots:
-            if (not KNOW_BOT_POSITIONS) and dist(inter.real.pos, self.pos) > self.obstacle_sensing_distance:
+            if (not KNOW_BOT_POSITIONS) and dist(inter.real.pos, self.pos) > self.max_sensing_distance:
                 continue
             force = -potential.gradient(potential.morse(r0=2 * BOT_RADIUS, k=2.5, a=4.0),
                                               lambda pos: dist(inter.real.pos, pos),
@@ -42,7 +42,7 @@ class Basic(BehaviorBase):
             vel += _FORCE_SENSITIVITY * force
 
         for obstacle in obstacles:
-            if obstacle.distance(self.pos) <= self.obstacle_sensing_distance:
+            if obstacle.distance(self.pos) <= self.max_sensing_distance:
                 force = -potential.gradient(potential.inverse_quadratic(k=1.0),
                                                   obstacle.distance,
                                                   self.pos,

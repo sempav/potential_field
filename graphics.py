@@ -65,7 +65,7 @@ class Graphics:
             for bot in bots:
                 pygame.draw.circle(self.screen, SENSOR_COLOR,
                                    self.field.fit_on_screen(bot.real.pos),
-                                   self.field.scale(bot.virtual.obstacle_sensing_distance),
+                                   self.field.scale(bot.virtual.max_sensing_distance),
                                    1)
         for bot in bots:
             pygame.draw.circle(self.screen, BOT_COLOR,
