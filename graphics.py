@@ -14,6 +14,7 @@ TARGET_RADIUS = 5
 
 DRAW_COORD_GRID = True
 DRAW_SENSING_AREA = True
+DRAW_VELOCITY = True
 
 
 def draw_circle(screen, field, color, center, radius):
@@ -69,6 +70,9 @@ class Graphics:
                                    self.field.scale(bot.virtual.max_sensing_distance),
                                    1)
                 bot.virtual.draw(self.screen, self.field)
+
+        if DRAW_VELOCITY:
+            for bot in bots:
                 draw_line(self.screen, self.field, (0, 115, 0),
                           bot.real.pos, 
                           bot.real.pos + bot.real.vel / (BOT_VEL_CAP + 1e-3),
