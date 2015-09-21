@@ -52,3 +52,7 @@ class Basic(BehaviorBase):
             if length(vel) > 0:
                 vel = normalize(vel)
         return vel
+
+
+    def draw(self, screen, field):
+        pass
