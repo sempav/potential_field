@@ -11,26 +11,6 @@ OBSTACLE_CLEARANCE = 0.5 * BOT_RADIUS
 KNOW_BOT_POSITIONS = True
 
 
-class BehaviorBase():
-    """
-    "Abstract" base class for movement logic.
-
-    Any concrete subclass must redefine calc_desired_velocity.
-    """
-
-    def calc_desired_velocity(self, bots, obstacles, targets):
-        raise NotImplemented
-
-
-    def update_vel(self, bots, obstacles, targets):
-        self.vel = self.calc_desired_velocity(bots, obstacles, targets)
-
-
-    def sync_to_real(self, real):
-        self.pos = real.pos
-        self.vel = real.vel
-
-
 class PhysicalBot():
     def __init__(self, pos = (0, 0), vel = (0, 0), max_vel = BOT_VEL_CAP,
                                                    max_accel = BOT_ACCEL_CAP):

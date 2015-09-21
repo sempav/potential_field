@@ -1,6 +1,7 @@
 import pygame
 
-from vector import Point
+from bot import BOT_VEL_CAP
+from vector import Point, length
 
 GRID_COLOR = 100,100,100
 AXES_COLOR = 155,155,155
@@ -67,6 +68,12 @@ class Graphics:
                                    self.field.fit_on_screen(bot.real.pos),
                                    self.field.scale(bot.virtual.max_sensing_distance),
                                    1)
+                bot.virtual.draw(self.screen, self.field)
+                draw_line(self.screen, self.field, (0, 115, 0),
+                          bot.real.pos, 
+                          bot.real.pos + bot.real.vel / (BOT_VEL_CAP + 1e-3),
+                          1)
+
         for bot in bots:
             pygame.draw.circle(self.screen, BOT_COLOR,
                                self.field.fit_on_screen(bot.real.pos),

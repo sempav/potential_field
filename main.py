@@ -23,14 +23,14 @@ def reset(eng, trap, group, movement=engine.Movement.Speed):
     eng.targets = []
 
     if group:
-        eng.bots.append(Bot(pos=( 5.0,  0.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
-        eng.bots.append(Bot(pos=(-3.0, -1.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
-        eng.bots.append(Bot(pos=(-5.0,  0.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
-        eng.bots.append(Bot(pos=(-5.0,  1.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
-        eng.bots.append(Bot(pos=(-6.0,  0.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
-        eng.bots.append(Bot(pos=(-6.0, -1.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
-        eng.bots.append(Bot(pos=(-7.0,  0.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
-    eng.bots.append(Bot(pos=(-7.0,  1.0), vel=(0.0, 0.0), behavior=behaviors.Basic(movement)))
+        eng.bots.append(Bot(pos=( 5.0,  0.0), vel=(0.0, 0.0), behavior=behaviors.SensorBased(movement)))
+        eng.bots.append(Bot(pos=(-3.0, -1.0), vel=(0.0, 0.0), behavior=behaviors.SensorBased(movement)))
+        eng.bots.append(Bot(pos=(-5.0,  0.0), vel=(0.0, 0.0), behavior=behaviors.SensorBased(movement)))
+        eng.bots.append(Bot(pos=(-5.0,  1.0), vel=(0.0, 0.0), behavior=behaviors.SensorBased(movement)))
+        eng.bots.append(Bot(pos=(-6.0,  0.0), vel=(0.0, 0.0), behavior=behaviors.SensorBased(movement)))
+        eng.bots.append(Bot(pos=(-6.0, -1.0), vel=(0.0, 0.0), behavior=behaviors.SensorBased(movement)))
+        eng.bots.append(Bot(pos=(-7.0,  0.0), vel=(0.0, 0.0), behavior=behaviors.SensorBased(movement)))
+    eng.bots.append(Bot(pos=(-7.0,  1.0), vel=(0.0, 0.0), behavior=behaviors.SensorBased(movement)))
 
     if trap:
         eng.obstacles.extend(obstacle.polygon_to_obstacles([Point(0, -3),

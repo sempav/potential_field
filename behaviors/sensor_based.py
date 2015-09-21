@@ -1,23 +1,30 @@
-from functools import partial
-
 from base import BehaviorBase
 from bot import BOT_RADIUS, \
                 MAX_SENSING_DISTANCE, KNOW_BOT_POSITIONS, \
-                OBSTACLE_CLEARANCE
+                OBSTACLE_CLEARANCE, BOT_VEL_CAP
 from engine import Movement
 import potential
+from sensor import Sensor
 from vector import Vector, length, normalize, dist
+from math import pi, atan2
+import graphics
 
 
 _FORCE_SENSITIVITY = 5e-4
 
 
-class Basic(BehaviorBase):
-    def __init__(self, movement = Movement.Accel,
-                 max_sensing_distance = MAX_SENSING_DISTANCE):
+class SensorBased(BehaviorBase):
+    def __init__(self, movement=Movement.Accel, 
+                 max_sensing_distance = MAX_SENSING_DISTANCE,
+                 num_sensors=32,
+                 sensor_angles=None):
         self.movement = movement
         self.radius = BOT_RADIUS
         self.max_sensing_distance = max_sensing_distance
+        if sensor_angles is None:
+            sensor_angles = [(x * 2 * pi) / num_sensors for x in xrange(num_sensors)]
+        self.sensors = [Sensor(ang, self.radius, max_sensing_distance)
+                        for ang in sensor_angles]
 
 
     def calc_desired_velocity(self, bots, obstacles, targets):
@@ -40,15 +47,29 @@ class Basic(BehaviorBase):
                                         0)
             vel += _FORCE_SENSITIVITY * force
 
-        for obstacle in obstacles:
-            if obstacle.distance(self.pos) <= self.max_sensing_distance:
-                force = -potential.gradient(potential.inverse_quadratic(k=1.0),
-                                            obstacle.distance(self.pos),
-                                            obstacle.repulsion_dir(self.pos),
-                                            OBSTACLE_CLEARANCE + self.radius)
+        #ang = atan2(self.vel.y, self.vel.x)
+        ang = 0
+        self.distances = []
+        for s in self.sensors:
+            d = s.get_distance(self.pos, ang, obstacles)
+            self.distances.append(d)
+            if d < self.max_sensing_distance:
+                force = -potential.gradient(potential.inverse_quadratic(k=0.5),
+                                            d,
+                                            -s.get_ray(self.pos, ang).dir,
+                                            0 * OBSTACLE_CLEARANCE + self.radius)
                 vel += _FORCE_SENSITIVITY * force
 
         if self.movement == Movement.Dir:
             if length(vel) > 0:
                 vel = normalize(vel)
         return vel
+
+
+    def draw(self, screen, field):
+        for s, d in zip(self.sensors, self.distances):
+            r = s.get_ray(self.pos, 0 * atan2(self.vel.y, self.vel.x))
+            graphics.draw_line(screen, field, (115, 115, 200),
+                               r.orig,
+                               r.orig + r.dir * d,
+                               1)
