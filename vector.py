@@ -1,5 +1,5 @@
 import collections
-from math import sqrt
+from math import sqrt, atan2
 import numbers
 
 # precision of geometric operations, used in tests
@@ -23,6 +23,14 @@ def dot(a, b):
 # returns absolute value of the cross product
 def cross(a, b):
     return a[0] * b[1] - a[1] * b[0]
+
+# returns *absolute* value of the angle between two vectors
+def angle(a, b):
+    return abs(signed_angle(a, b))
+
+# returns signed angle between two vectors
+def signed_angle(a, b):
+    return atan2(cross(a, b), dot(a, b))
 
 
 # define a vector class with proper operations
