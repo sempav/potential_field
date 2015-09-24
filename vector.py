@@ -15,7 +15,7 @@ def dist(a, b):
     return length( (a[0] - b[0], a[1] - b[1]) )
 
 def normalize(v):
-    return type(v)(v[0] / length(v), v[1] / length(v))
+    return Vector(v[0] / length(v), v[1] / length(v))
 
 def dot(a, b):
     return a[0] * b[0] + a[1] * b[1]
