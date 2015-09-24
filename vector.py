@@ -1,5 +1,5 @@
 import collections
-from math import sqrt, atan2
+from math import sqrt, atan2, sin, cos
 import numbers
 
 # precision of geometric operations, used in tests
@@ -32,6 +32,11 @@ def angle(a, b):
 def signed_angle(a, b):
     return atan2(cross(a, b), dot(a, b))
 
+def rotate(v, ang):
+    c = cos(ang)
+    s = sin(ang)
+    return Vector(v.x * c - v.y * s,
+                  v.x * s + v.y * c)
 
 # define a vector class with proper operations
 

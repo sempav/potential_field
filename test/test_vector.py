@@ -2,6 +2,7 @@ import unittest
 import vector
 from vector import Vector, Point, geom_places, length, dist
 from vector import normalize, dot, cross, angle, signed_angle
+from vector import rotate
 
 class VectorTestCase(unittest.TestCase):
     def testLength(self):
@@ -68,3 +69,10 @@ class VectorTestCase(unittest.TestCase):
                                pi)
         self.assertAlmostEqual(angle(Vector(-100.0, 0.0), Vector(0.01, 0.0)),
                                pi)
+
+
+    def testRotate(self):
+        from math import pi
+        self.assertEqual(rotate(Vector(2.0, 0.0), pi/4), Vector(2**0.5, 2**0.5))
+        self.assertEqual(rotate(Vector(0.0, 100.0), pi), Vector(0.0, -100.0))
+        self.assertEqual(rotate(Vector(1.46, 1.75), -2 * pi), Vector(1.46, 1.75))
