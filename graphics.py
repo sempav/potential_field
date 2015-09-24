@@ -13,8 +13,9 @@ SENSOR_COLOR=50,50,155
 TARGET_RADIUS = 5
 
 DRAW_COORD_GRID = True
-DRAW_SENSING_AREA = True
-DRAW_VELOCITY = True
+DRAW_SENSING_AREA = False
+DRAW_VELOCITY = False
+DRAW_DIRECTION = True
 
 
 def draw_circle(screen, field, color, center, radius):
@@ -75,7 +76,13 @@ class Graphics:
             for bot in bots:
                 draw_line(self.screen, self.field, (0, 115, 0),
                           bot.real.pos, 
-                          bot.real.pos + bot.real.vel / (BOT_VEL_CAP + 1e-3),
+                          bot.real.pos + bot.real.vel / (BOT_VEL_CAP),
+                          1)
+        if DRAW_DIRECTION:
+            for bot in bots:
+                draw_line(self.screen, self.field, (115, 115, 0),
+                          bot.real.pos,
+                          bot.real.pos + bot.real.dir,
                           1)
 
         for bot in bots:
