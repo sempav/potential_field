@@ -22,3 +22,5 @@ class HolonomicModel():
             self.vel = self.max_vel * normalize(self.vel)
 
 
+    def update_state(self, delta_time):
+        self.pos += self.vel * delta_time

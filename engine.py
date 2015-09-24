@@ -34,4 +34,4 @@ class Engine():
             bot.real.update_vel(delta_time, bot.virtual.vel)
 
         for bot in self.bots:
-            bot.real.pos += bot.real.vel * delta_time
+            bot.real.update_state(delta_time)
