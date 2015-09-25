@@ -18,10 +18,11 @@ DRAW_VELOCITY = False
 DRAW_DIRECTION = True
 
 
-def draw_circle(screen, field, color, center, radius):
+def draw_circle(screen, field, color, center, radius, thickness=2):
     pygame.draw.circle(screen, color,
                        field.fit_on_screen(center),
-                       field.scale(radius), 2)
+                       field.scale(radius),
+                       thickness)
 
 
 def draw_line(screen, field, color, a, b, thickness=2):
