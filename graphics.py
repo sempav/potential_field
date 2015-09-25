@@ -70,13 +70,11 @@ class Graphics:
                                    self.field.fit_on_screen(bot.real.pos),
                                    self.field.scale(bot.virtual.radius + bot.virtual.max_sensing_distance),
                                    1)
-                bot.virtual.draw(self.screen, self.field)
-
         if DRAW_VELOCITY:
             for bot in bots:
                 draw_line(self.screen, self.field, (0, 115, 0),
                           bot.real.pos, 
-                          bot.real.pos + bot.real.vel / (BOT_VEL_CAP),
+                          bot.real.pos + bot.real.vel,
                           1)
         if DRAW_DIRECTION:
             for bot in bots:

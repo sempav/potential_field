@@ -10,7 +10,7 @@ from math import pi, atan2, cos
 import graphics
 
 
-_FORCE_SENSITIVITY = 5e-4
+_FORCE_SENSITIVITY = 1.0
 CRITICAL_DIST = 0.5 * BOT_RADIUS
 CRITICAL_VEL = 1e-6
 COLLISION_DELTA_TIME = 3.0 / 60.0

@@ -83,7 +83,7 @@ def main():
     iter_counter = 1
 
     while not finished:
-        delta_time = clock.tick(FRAMERATE)
+        delta_time = 0.001 * clock.tick(FRAMERATE)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 finished = True
