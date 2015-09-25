@@ -85,6 +85,4 @@ class Graphics:
                           1)
 
         for bot in bots:
-            pygame.draw.circle(self.screen, BOT_COLOR,
-                               self.field.fit_on_screen(bot.real.pos),
-                               self.field.scale(bot.virtual.radius), 1)
+            bot.draw(self.screen, self.field)

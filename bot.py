@@ -16,3 +16,7 @@ class Bot():
         self.virtual = behavior
         self.real = model
         self.virtual.sync_to_real(self.real)
+
+    def draw(self, screen, field):
+        self.real.draw(screen, field)
+        self.virtual.draw(screen, field)

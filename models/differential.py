@@ -1,6 +1,7 @@
 from bot import BOT_VEL_CAP, BOT_ACCEL_CAP, BOT_RADIUS
 from vector import Point, Vector, signed_angle, rotate, length, normalize
 from math import pi, copysign
+from graphics import draw_circle, draw_line, BOT_COLOR
 
 MIN_ROTATION_ANGLE = 0.01 * pi
 #ROTATION_RATE = pi * 1e-3
@@ -49,3 +50,18 @@ class DifferentialModel():
     def update_state(self, delta_time):
         self.pos += delta_time * self.vel
         self.dir = rotate(self.dir, delta_time * self.rot_vel)
+
+
+    def draw(self, screen, field):
+        draw_circle(screen, field, BOT_COLOR,
+                           self.pos,
+                           self.radius, 1)
+        x = self.radius * 0.5 * 3**0.5 # R * sqrt(3)/2
+        y = 0.5 * self.radius
+        ang = signed_angle(Vector(0.0, 1.0), self.dir)
+        pa = self.pos + rotate(Vector(-x, -y), ang)
+        pb = self.pos + rotate(Vector( x, -y), ang)
+        pc = self.pos + rotate(Vector(0.0, 2 * y), ang)
+        draw_line(screen, field, BOT_COLOR, pa, pb, 1)
+        draw_line(screen, field, BOT_COLOR, pa, pc, 1)
+        draw_line(screen, field, BOT_COLOR, pb, pc, 1)

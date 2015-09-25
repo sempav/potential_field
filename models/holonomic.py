@@ -1,5 +1,6 @@
 from bot import BOT_VEL_CAP, BOT_ACCEL_CAP, BOT_RADIUS
 from vector import Point, Vector, length, normalize
+from graphics import draw_circle, BOT_COLOR
 
 class HolonomicModel():
     def __init__(self, pos = (0.0, 0.0), dir = (1.0, 0.0), vel = 0.0,
@@ -34,3 +35,9 @@ class HolonomicModel():
 
     def update_state(self, delta_time):
         self.pos += self.vel * delta_time
+
+
+    def draw(self, screen, field):
+        draw_circle(screen, field, BOT_COLOR,
+                           self.pos,
+                           self.radius, 1)
