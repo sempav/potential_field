@@ -11,15 +11,15 @@ class DifferentialModel():
     def __init__(self, pos, dir, vel = 0.0,
                        max_vel = BOT_VEL_CAP,
                        max_accel = BOT_ACCEL_CAP,
-                       width = 2 * BOT_RADIUS):
+                       radius = BOT_RADIUS):
         self.pos = Point(*pos)
         self.dir = normalize(dir)
         self.lvel = vel
         self.rvel = vel
         self.max_vel = max_vel
         self.max_accel = max_accel
-        self.width = width
-        self.radius = 0.5 * width
+        self.radius = radius
+        self.width = 2.0 * radius
 
 
     @property

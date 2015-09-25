@@ -1,14 +1,24 @@
-from bot import BOT_VEL_CAP, BOT_ACCEL_CAP
+from bot import BOT_VEL_CAP, BOT_ACCEL_CAP, BOT_RADIUS
 from vector import Point, Vector, length, normalize
 
 class HolonomicModel():
-    def __init__(self, pos = (0.0, 0.0), vel = (0.0, 0.0),
+    def __init__(self, pos = (0.0, 0.0), dir = (1.0, 0.0), vel = 0.0,
                        max_vel = BOT_VEL_CAP,
-                       max_accel = BOT_ACCEL_CAP):
+                       max_accel = BOT_ACCEL_CAP,
+                       radius = BOT_RADIUS):
         self.pos = Point(*pos)
-        self.vel = Vector(*vel)
+        self.vel = vel * Vector(*dir)
         self.max_vel = max_vel
         self.max_accel = max_accel
+        self.radius = radius
+
+
+    @property
+    def dir(self):
+        try:
+            return normalize(self.vel)
+        except ZeroDivisionError:
+            return Vector(1.0, 0.0)
 
 
     def update_vel(self, delta_time, desired_vel):
