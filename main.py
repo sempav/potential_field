@@ -12,13 +12,14 @@ from vector import Point, Vector, length, normalize
 from graphics import Graphics
 from field import Field
 from bot import Bot
+from obstacle_maps import maps
 
 
 FRAMERATE = 60
 FRAMES_PER_BOT_UPDATE = 1
 
 
-def reset(eng, trap, group, movement=engine.Movement.Speed):
+def reset(eng, obstacle_map, group, movement=engine.Movement.Speed):
     eng.bots = []
     eng.obstacles = []
     eng.targets = []
@@ -33,18 +34,7 @@ def reset(eng, trap, group, movement=engine.Movement.Speed):
         eng.bots.append(Bot(models.DifferentialModel(pos=(-7.0,  0.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
     eng.bots.append(Bot(models.DifferentialModel(pos=(-7.0,  1.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
 
-    if trap:
-        eng.obstacles.extend(obstacle.polygon_to_obstacles([Point(0, -3),
-                                                            Point(3, -3),
-                                                            Point(3,  3),
-                                                            Point(0,  3),
-                                                            Point(0,  2),
-                                                            Point(2,  2),
-                                                            Point(2, -2),
-                                                            Point(0, -2)]))
-    else:
-        eng.obstacles.append(obstacle.create_obstacle_circle(Point(1.25, 0.5), 1.1))
-        eng.obstacles.append(obstacle.create_obstacle_circle(Point(-1.25, 0.0), 0.2))
+    eng.obstacles = maps[obstacle_map][:]
 
     eng.targets.append(Point(4.5, 1.0))
 
@@ -74,9 +64,9 @@ def main():
     eng = engine.Engine(field)
 
     cur_group = True
-    cur_trap = False
+    cur_obstacle_map = 0
     cur_movement = engine.Movement.Speed
-    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
+    reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
 
     finished = False
     clock = pygame.time.Clock()
@@ -88,27 +78,25 @@ def main():
             if event.type == pygame.QUIT:
                 finished = True
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_1:
+                if event.key == pygame.K_q:
                     cur_movement = engine.Movement.Accel
-                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
-                elif event.key == pygame.K_2:
-                    cur_movement = engine.Movement.Speed
-                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
-                elif event.key == pygame.K_3:
-                    cur_movement = engine.Movement.Dir
-                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
-                elif event.key == pygame.K_q:
-                    cur_trap = False
-                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
+                    reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
                 elif event.key == pygame.K_w:
-                    cur_trap = True
-                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
+                    cur_movement = engine.Movement.Speed
+                    reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
+                elif event.key == pygame.K_e:
+                    cur_movement = engine.Movement.Dir
+                    reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
+                elif event.key >= pygame.K_1 and event.key <= pygame.K_9:
+                    cur_obstacle_map = event.key - pygame.K_1
+                    print event.key, pygame.K_1, cur_obstacle_map
+                    reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
                 elif event.key == pygame.K_a:
                     cur_group = True
-                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
+                    reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
                 elif event.key == pygame.K_s:
                     cur_group = False
-                    reset(eng, trap=cur_trap, group=cur_group, movement=cur_movement)
+                    reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
 
         iter_counter += 1
         if iter_counter % FRAMES_PER_BOT_UPDATE == 0:
