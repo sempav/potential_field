@@ -1,6 +1,6 @@
 from bot import BOT_VEL_CAP, BOT_ACCEL_CAP, BOT_RADIUS
 from vector import Point, Vector, signed_angle, rotate, length, normalize
-from math import pi, copysign
+from math import pi, copysign, sin, cos
 from graphics import draw_circle, draw_line, BOT_COLOR
 
 MIN_ROTATION_ANGLE = 0.01 * pi
@@ -56,12 +56,13 @@ class DifferentialModel():
         draw_circle(screen, field, BOT_COLOR,
                            self.pos,
                            self.radius, 1)
-        x = self.radius * 0.5 * 3**0.5 # R * sqrt(3)/2
-        y = 0.5 * self.radius
+        top_angle = 40 * pi / 180
+        x = self.radius * sin(top_angle)
+        y = self.radius * cos(top_angle)
         ang = signed_angle(Vector(0.0, 1.0), self.dir)
         pa = self.pos + rotate(Vector(-x, -y), ang)
         pb = self.pos + rotate(Vector( x, -y), ang)
-        pc = self.pos + rotate(Vector(0.0, 2 * y), ang)
+        pc = self.pos + rotate(Vector(0.0, self.radius), ang)
         draw_line(screen, field, BOT_COLOR, pa, pb, 1)
         draw_line(screen, field, BOT_COLOR, pa, pc, 1)
         draw_line(screen, field, BOT_COLOR, pb, pc, 1)
