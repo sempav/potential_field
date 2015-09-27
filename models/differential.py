@@ -4,8 +4,7 @@ from math import pi, copysign, sin, cos
 from graphics import draw_circle, draw_line, BOT_COLOR
 
 MIN_ROTATION_ANGLE = 0.01 * pi
-#ROTATION_RATE = pi * 1e-3
-ROTATION_GAIN = 0.001
+ROTATION_GAIN = 1.0 # !before changing check abs_vel *= cos(ang) line
 MAX_VEL_ANGLE = pi / 3
 
 class DifferentialModel():
@@ -38,8 +37,30 @@ class DifferentialModel():
             ang = 0.0
         ang = ROTATION_GAIN * ang
         abs_vel = min(length(desired_vel), self.max_vel)
-        self.lvel = abs_vel - 0.5 * self.width * ang
-        self.rvel = abs_vel + 0.5 * self.width * ang
+
+        # don't move forward when doing a sharp turn;
+        # this seems sensible and also prevents bots from
+        # slamming into obstacles when trying to move away
+        #
+        # !this only makes sense with ROTATION_GAIN = 1.0!
+        abs_vel *= cos(signed_angle(desired_vel, self.dir))
+        if abs_vel < 0:
+            abs_vel = 0
+
+        # these are the velocities wheels would get
+        # if they didn't have to accelerate smoothly
+        target_lvel = abs_vel - 0.5 * self.width * ang
+        target_rvel = abs_vel + 0.5 * self.width * ang
+        #self.lvel = target_lvel
+        #self.rvel = target_rvel
+        if abs(self.lvel - target_lvel) < delta_time * BOT_ACCEL_CAP:
+            self.lvel = target_lvel
+        else:
+            self.lvel += copysign(BOT_ACCEL_CAP, target_lvel - self.lvel) * delta_time
+        if abs(self.rvel - target_rvel) < delta_time * BOT_ACCEL_CAP:
+            self.rvel = target_rvel
+        else:
+            self.rvel += copysign(BOT_ACCEL_CAP, target_rvel - self.rvel) * delta_time
         # cap velocity
         v = max(self.lvel, self.rvel)
         if v > self.max_vel:
