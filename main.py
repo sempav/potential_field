@@ -76,6 +76,8 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 finished = True
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                eng.targets[0] = field.screen_to_field(event.pos)
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     cur_movement = engine.Movement.Accel
@@ -100,12 +102,6 @@ def main():
         if iter_counter % FRAMES_PER_BOT_UPDATE == 0:
             eng.update_bots()
         eng.update_physics(delta_time)
-
-        mouse_pos = pygame.mouse.get_pos()
-        eng.targets[0] = field.screen_to_field(mouse_pos)
-        #time = 0.001 * pygame.time.get_ticks()
-        #eng.targets[0] = Point(math.cos(2 * time) + 2 * math.sin(time),
-        #                       math.sin(2 * time))
 
         graph.render(bots = eng.bots,
                      obstacles = eng.obstacles,
