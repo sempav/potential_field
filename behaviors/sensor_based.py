@@ -111,9 +111,34 @@ class SensorBased(BehaviorBase):
 
 
     def draw(self, screen, field):
-        for s, d in zip(self.sensors, self.distances):
-            r = s.get_ray(self.pos, 0 * atan2(self.vel.y, self.vel.x))
-            graphics.draw_line(screen, field, (115, 115, 200),
-                               r.orig,
-                               r.orig + r.dir * d,
-                               1)
+        if graphics.DRAW_SENSOR_RAYS:
+            for s, d in zip(self.sensors, self.distances):
+                r = s.get_ray(self.pos, 0.0)
+                graphics.draw_line(screen, field, (115, 115, 200),
+                                   r.orig,
+                                   r.orig + r.dir * d,
+                                   1)
+        if COLLISION_CHECK and self.collision:
+            # draw small purple circle indicating collision state
+            graphics.draw_circle(screen, field, (255, 0, 255),
+                                 self.pos,
+                                 0.5 * BOT_RADIUS)
+            # draw projections of virtual velocity onto sensor rays
+            if graphics.DRAW_SENSOR_RAYS:
+                vel_ang = signed_angle(self.virtual_vel_before_check, Vector(0.0, 1.0))
+                abs_vel = length(self.virtual_vel_before_check)
+                for s in self.sensors:
+                    c = cos(vel_ang - s.angle)
+                    proj = c * abs_vel;
+                    if proj < 0:
+                        continue
+                    r = s.get_ray(self.pos, 0.0)
+                    graphics.draw_line(screen, field, (115, 200, 200),
+                                       r.orig,
+                                       r.orig + r.dir * proj,
+                                       2)
+            # draw virtual velocity vector that was picked before collision check
+            graphics.draw_line(screen, field, (0, 200, 0),
+                               self.pos,
+                               self.pos + self.virtual_vel_before_check,
+                               2)

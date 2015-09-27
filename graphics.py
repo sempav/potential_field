@@ -12,10 +12,11 @@ SENSOR_COLOR=50,50,155
 
 TARGET_RADIUS = 5
 
-DRAW_COORD_GRID = True
-DRAW_SENSING_AREA = False
-DRAW_VELOCITY = False
-DRAW_DIRECTION = True
+DRAW_COORD_GRID = False
+DRAW_SENSOR_RANGE = True
+DRAW_SENSOR_RAYS = False
+DRAW_VELOCITY = True
+DRAW_DIRECTION = False
 
 
 def draw_circle(screen, field, color, center, radius, thickness=2):
@@ -65,7 +66,7 @@ class Graphics:
                                self.field.fit_on_screen(target),
                                TARGET_RADIUS, 1)
         
-        if DRAW_SENSING_AREA:
+        if DRAW_SENSOR_RANGE:
             for bot in bots:
                 pygame.draw.circle(self.screen, SENSOR_COLOR,
                                    self.field.fit_on_screen(bot.real.pos),
