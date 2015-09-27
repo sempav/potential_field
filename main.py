@@ -89,7 +89,6 @@ def main():
                     reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
                 elif event.key >= pygame.K_1 and event.key <= pygame.K_9:
                     cur_obstacle_map = event.key - pygame.K_1
-                    print event.key, pygame.K_1, cur_obstacle_map
                     reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
                 elif event.key == pygame.K_a:
                     cur_group = True
