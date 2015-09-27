@@ -11,9 +11,10 @@ import graphics
 
 
 _FORCE_SENSITIVITY = 1.0
+COLLISION_CHECK = True
 CRITICAL_DIST = 0.5 * BOT_RADIUS
 CRITICAL_VEL = 1e-6
-COLLISION_DELTA_TIME = 3.0 / 60.0
+COLLISION_DELTA_TIME = 1.0 / 60.0
 
 
 class SensorBased(BehaviorBase):
@@ -60,37 +61,51 @@ class SensorBased(BehaviorBase):
                 force = -potential.gradient(potential.inverse_quadratic(k=0.05),
                                             d,
                                             -s.get_ray(self.pos, ang).dir,
-                                            0 * OBSTACLE_CLEARANCE + self.radius)
+                                            OBSTACLE_CLEARANCE)
                 vel += _FORCE_SENSITIVITY * force
 
         if self.movement == Movement.Dir:
             if length(vel) > 0:
                 vel = normalize(vel)
 
-        # check for possible collisions:
-        # stop moving forward if an obstacle is nearby
-        collision = False
-        vel_ang = signed_angle(Vector(0.0, 1.0), vel)
-        abs_vel = length(vel)
-        for d, s in zip(self.distances, self.sensors):
-            c = cos(vel_ang - s.angle)
-            if d - c * abs_vel < CRITICAL_DIST:
-                collision = True
-                break
-        if not collision:
-            # separate check for other bots
-            for inter in bots:
-                # don't count distance to self
-                if inter.virtual is self:
+        # TODO: get max_vel from corresponding Model
+        if length(vel) > BOT_VEL_CAP:
+            vel = normalize(vel) * BOT_VEL_CAP
+
+        self.virtual_vel_before_check = vel
+        if COLLISION_CHECK:
+            # check for possible collisions:
+            # stop moving forward if an obstacle is nearby
+            collision = False
+            vel_ang = signed_angle(vel, Vector(0.0, 1.0))
+            abs_vel = length(vel)
+            for cur_d, s in zip(self.distances, self.sensors):
+                if cur_d == s.max_distance:
                     continue
-                d = dist(inter.real.pos + COLLISION_DELTA_TIME * inter.real.vel,
-                         self.pos + COLLISION_DELTA_TIME * vel)
-                d -= (self.radius + inter.real.radius)
-                if d <= CRITICAL_DIST:
+                c = cos(vel_ang - s.angle)
+                new_d = cur_d - c * abs_vel * COLLISION_DELTA_TIME
+                if new_d < CRITICAL_DIST and new_d < cur_d:
                     collision = True
                     break
-        if collision:
-            vel = normalize(vel) * CRITICAL_VEL
+            if not collision:
+                # separate check for possible collision with another bot
+                for inter in bots:
+                    # don't count collsions with self
+                    if inter.virtual is self:
+                        continue
+                    new_d = dist(inter.real.pos + COLLISION_DELTA_TIME * inter.real.vel,
+                                 self.pos + COLLISION_DELTA_TIME * vel)
+                    new_d -= (self.radius + inter.real.radius)
+                    cur_d = dist(inter.real.pos, self.pos)
+                    cur_d -= (self.radius + inter.real.radius)
+                    if d <= CRITICAL_DIST and new_d < cur_d:
+                        collision = True
+                        break
+            if collision:
+                vel = normalize(vel) * CRITICAL_VEL
+                self.collision = True
+            else:
+                self.collision = False
 
         return vel
 
