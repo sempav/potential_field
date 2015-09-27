@@ -91,3 +91,4 @@ def create_obstacle_polygon(vertices):
     o = Obstacle(partial(distance_to_polygon, vertices=vertices),
                  partial(dir_from_polygon, vertices=vertices),
                  shapes.Polygon(vertices))
+    return o
