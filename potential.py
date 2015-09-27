@@ -1,6 +1,6 @@
 import math
 
-from vector import Vector, dist, normalize
+from vector import Vector, normalize
 
 
 class morse():

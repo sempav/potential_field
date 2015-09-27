@@ -1,7 +1,6 @@
 import pygame
 
-from bot import BOT_VEL_CAP
-from vector import Point, length
+from vector import Point
 
 GRID_COLOR = 100,100,100
 AXES_COLOR = 155,155,155

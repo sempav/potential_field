@@ -1,7 +1,3 @@
-import potential
-import vector
-from vector import Point, Vector, length, normalize
-
 import enum
 
 

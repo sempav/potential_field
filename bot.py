@@ -1,7 +1,3 @@
-from vector import Vector, Point, dist, length, normalize
-from engine import Movement
-
-
 BOT_RADIUS = 0.3
 BOT_ACCEL_CAP = 10.0
 BOT_VEL_CAP = 1.0

@@ -4,7 +4,7 @@ from itertools import starmap
 
 import shapes
 from graphics import OBSTACLE_COLOR
-from vector import Vector, Point, dist, normalize, dot, cross
+from vector import Vector, dist, normalize, dot, cross
 
 class Obstacle():
     # distance_field takes a Point and returns distance to the obstacle

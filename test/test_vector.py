@@ -1,5 +1,4 @@
 import unittest
-import vector
 from vector import Vector, Point, geom_places, length, dist
 from vector import normalize, dot, cross, angle, signed_angle
 from vector import rotate

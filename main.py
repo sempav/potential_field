@@ -1,14 +1,13 @@
 #! /usr/bin/env python2
 
 
-import math
 import pygame
 import os
 
-import engine, vector, potential, obstacle
+import engine
 import behaviors
 import models
-from vector import Point, Vector, length, normalize
+from vector import Point
 from graphics import Graphics
 from field import Field
 from bot import Bot

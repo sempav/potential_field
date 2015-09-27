@@ -1,5 +1,5 @@
 from graphics import draw_circle, draw_line
-from vector import normalize, dot, cross, length, Point, Vector
+from vector import normalize, dot, cross, length, Vector
 from math import sqrt
 
 class Ray():
