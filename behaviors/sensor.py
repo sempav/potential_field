@@ -1,4 +1,4 @@
-from vector import Vector, normalize, dist
+from vector import Vector, normalize, dist, rotate
 from shapes import Ray, first_intersection
 from math import cos, sin
 
@@ -11,13 +11,7 @@ class Sensor():
 
     def get_ray(self, bot_pos, bot_angle):
         ang = self.angle + bot_angle
-        c = cos(ang)
-        s = sin(ang)
-        #  c s
-        # -s c
-        dir = Vector(0, self.bot_radius)
-        dir = Vector( dir.x * c + dir.y * s,
-                     -dir.x * s + dir.y * c)
+        dir = rotate(Vector(0, self.bot_radius), ang)
         dir = normalize(dir)
         return Ray(bot_pos + dir * self.bot_radius, dir)
 
