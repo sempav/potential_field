@@ -1,26 +1,27 @@
 from base import BehaviorBase
 from bot import BOT_RADIUS, \
                 MAX_SENSING_DISTANCE, KNOW_BOT_POSITIONS, \
-                OBSTACLE_CLEARANCE, BOT_VEL_CAP
+                OBSTACLE_CLEARANCE, BOT_VEL_CAP, BOT_ACCEL_CAP
 from engine import Movement
 import potential
 from sensor import Sensor
 from vector import Vector, length, normalize, dist, signed_angle
-from math import pi, atan2, cos
+from math import pi, atan2, cos, degrees
 import graphics
 
 
 _FORCE_SENSITIVITY = 1.0
 COLLISION_CHECK = True
-CRITICAL_DIST = 0.5 * BOT_RADIUS
+CRITICAL_DIST = 0.2 * BOT_RADIUS
 CRITICAL_VEL = 1e-6
-COLLISION_DELTA_TIME = 1.0 / 60.0
+COLLISION_DELTA_TIME = BOT_VEL_CAP / BOT_ACCEL_CAP
+ROTATE_SENSORS = True
 
 
 class SensorBased(BehaviorBase):
     def __init__(self, movement=Movement.Accel, 
                  max_sensing_distance = MAX_SENSING_DISTANCE,
-                 num_sensors=32,
+                 num_sensors=16,
                  sensor_angles=None):
         self.movement = movement
         self.radius = BOT_RADIUS
@@ -29,10 +30,15 @@ class SensorBased(BehaviorBase):
             sensor_angles = [(x * 2 * pi) / num_sensors for x in xrange(num_sensors)]
         self.sensors = [Sensor(ang, self.radius, max_sensing_distance)
                         for ang in sensor_angles]
+        self.obstacle_force_coeff = 1.0 / num_sensors
+
+
+    def get_heading_angle(self):
+        return atan2(-self.real_dir.x, self.real_dir.y)
 
 
     def calc_desired_velocity(self, bots, obstacles, targets):
-        vel = self.vel
+        vel = self.real_vel
         if self.movement != Movement.Accel:
             vel = Vector(0, 0)
         for inter in bots:
@@ -51,18 +57,21 @@ class SensorBased(BehaviorBase):
                                         0)
             vel += _FORCE_SENSITIVITY * force
 
-        #ang = atan2(self.vel.y, self.vel.x)
-        ang = 0
+
+        if ROTATE_SENSORS:
+            ang = self.get_heading_angle()
+        else:
+            ang = 0.0
         self.distances = []
         for s in self.sensors:
             d = s.get_distance(self.pos, ang, obstacles)
             self.distances.append(d)
             if d < self.max_sensing_distance:
-                force = -potential.gradient(potential.inverse_quadratic(k=0.05),
+                force = -potential.gradient(potential.inverse_quadratic(k=0.5),
                                             d,
                                             -s.get_ray(self.pos, ang).dir,
                                             OBSTACLE_CLEARANCE)
-                vel += _FORCE_SENSITIVITY * force
+                vel += _FORCE_SENSITIVITY * force * self.obstacle_force_coeff
 
         if self.movement == Movement.Dir:
             if length(vel) > 0:
@@ -77,12 +86,16 @@ class SensorBased(BehaviorBase):
             # check for possible collisions:
             # stop moving forward if an obstacle is nearby
             collision = False
-            vel_ang = signed_angle(vel, Vector(0.0, 1.0))
             abs_vel = length(vel)
+            if ROTATE_SENSORS:
+                ang = self.get_heading_angle()
+            else:
+                ang = 0.0
             for cur_d, s in zip(self.distances, self.sensors):
                 if cur_d == s.max_distance:
                     continue
-                c = cos(vel_ang - s.angle)
+                r = s.get_ray(self.pos, ang)
+                c = cos(signed_angle(vel, r.dir))
                 new_d = cur_d - c * abs_vel * COLLISION_DELTA_TIME
                 if new_d < CRITICAL_DIST and new_d < cur_d:
                     collision = True
@@ -112,8 +125,12 @@ class SensorBased(BehaviorBase):
 
     def draw(self, screen, field):
         if graphics.DRAW_SENSOR_RAYS:
+            if ROTATE_SENSORS:
+                ang = self.get_heading_angle()
+            else:
+                ang = 0.0
             for s, d in zip(self.sensors, self.distances):
-                r = s.get_ray(self.pos, 0.0)
+                r = s.get_ray(self.pos, ang)
                 graphics.draw_line(screen, field, (115, 115, 200),
                                    r.orig,
                                    r.orig + r.dir * d,
@@ -127,18 +144,27 @@ class SensorBased(BehaviorBase):
             if graphics.DRAW_SENSOR_RAYS:
                 vel_ang = signed_angle(self.virtual_vel_before_check, Vector(0.0, 1.0))
                 abs_vel = length(self.virtual_vel_before_check)
+                if ROTATE_SENSORS:
+                    ang = self.get_heading_angle()
+                else:
+                    ang = 0.0
                 for s in self.sensors:
-                    c = cos(vel_ang - s.angle)
+                    r = s.get_ray(self.pos, ang)
+                    c = cos(signed_angle(self.virtual_vel_before_check, r.dir))
                     proj = c * abs_vel;
                     if proj < 0:
                         continue
-                    r = s.get_ray(self.pos, 0.0)
                     graphics.draw_line(screen, field, (115, 200, 200),
                                        r.orig,
                                        r.orig + r.dir * proj,
                                        2)
+            v = Vector(0.0, 0.0)
+            try:
+                v = 0.5 * normalize(self.virtual_vel_before_check)
+            except ZeroDivisionError:
+                pass
             # draw virtual velocity vector that was picked before collision check
             graphics.draw_line(screen, field, (0, 200, 0),
                                self.pos,
-                               self.pos + self.virtual_vel_before_check,
-                               2)
+                               self.pos + v,
+                               1)
