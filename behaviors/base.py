@@ -10,11 +10,12 @@ class BehaviorBase():
 
 
     def update_vel(self, bots, obstacles, targets):
-        self.vel = self.calc_desired_velocity(bots, obstacles, targets)
+        self.desired_vel = self.calc_desired_velocity(bots, obstacles, targets)
 
 
     def sync_to_real(self, real):
         self.pos = real.pos
-        self.vel = real.vel
+        self.real_vel = real.vel
+        self.real_dir = real.dir
 
 

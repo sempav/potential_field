@@ -27,7 +27,7 @@ class Engine():
 
     def update_physics(self, delta_time):
         for bot in self.bots:
-            bot.real.update_vel(delta_time, bot.virtual.vel)
+            bot.real.update_vel(delta_time, bot.virtual.desired_vel)
 
         for bot in self.bots:
             bot.real.update_state(delta_time)
