@@ -18,20 +18,20 @@ FRAMERATE = 60
 FRAMES_PER_BOT_UPDATE = 1
 
 
-def reset(eng, obstacle_map, group, movement=engine.Movement.Speed):
+def reset(eng, obstacle_map, group, movement=engine.Movement.Speed, model=models.DifferentialModel):
     eng.bots = []
     eng.obstacles = []
     eng.targets = []
 
     if group:
-        eng.bots.append(Bot(models.DifferentialModel(pos=( 5.0,  0.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
-        eng.bots.append(Bot(models.DifferentialModel(pos=(-3.0, -1.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
-        eng.bots.append(Bot(models.DifferentialModel(pos=(-5.0,  0.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
-        eng.bots.append(Bot(models.DifferentialModel(pos=(-5.0,  1.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
-        eng.bots.append(Bot(models.DifferentialModel(pos=(-6.0,  0.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
-        eng.bots.append(Bot(models.DifferentialModel(pos=(-6.0, -1.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
-        eng.bots.append(Bot(models.DifferentialModel(pos=(-7.0,  0.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
-    eng.bots.append(Bot(models.DifferentialModel(pos=(-7.0,  1.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
+        eng.bots.append(Bot(model(pos=( 5.0,  0.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
+        eng.bots.append(Bot(model(pos=(-3.0, -1.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
+        eng.bots.append(Bot(model(pos=(-5.0,  0.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
+        eng.bots.append(Bot(model(pos=(-5.0,  1.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
+        eng.bots.append(Bot(model(pos=(-6.0,  0.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
+        eng.bots.append(Bot(model(pos=(-6.0, -1.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
+        eng.bots.append(Bot(model(pos=(-7.0,  0.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
+    eng.bots.append(Bot(model(pos=(-7.0,  1.0), dir=(1.0, 0.0), vel=0.0), behavior=behaviors.SensorBased(movement)))
 
     eng.obstacles = maps[obstacle_map][:]
 
@@ -65,6 +65,7 @@ def main():
     cur_group = True
     cur_obstacle_map = 0
     cur_movement = engine.Movement.Speed
+    cur_model = models.DifferentialModel
     reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
 
     finished = False
@@ -81,22 +82,21 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     cur_movement = engine.Movement.Accel
-                    reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
                 elif event.key == pygame.K_w:
                     cur_movement = engine.Movement.Speed
-                    reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
                 elif event.key == pygame.K_e:
                     cur_movement = engine.Movement.Dir
-                    reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
                 elif event.key >= pygame.K_1 and event.key <= pygame.K_9:
                     cur_obstacle_map = event.key - pygame.K_1
-                    reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
                 elif event.key == pygame.K_a:
                     cur_group = True
-                    reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
                 elif event.key == pygame.K_s:
                     cur_group = False
-                    reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement)
+                elif event.key == pygame.K_z:
+                    cur_model = models.HolonomicModel
+                elif event.key == pygame.K_x:
+                    cur_model = models.DifferentialModel
+                reset(eng, obstacle_map=cur_obstacle_map, group=cur_group, movement=cur_movement, model=cur_model)
 
         iter_counter += 1
         if iter_counter % FRAMES_PER_BOT_UPDATE == 0:
