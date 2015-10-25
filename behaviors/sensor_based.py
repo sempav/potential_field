@@ -1,13 +1,13 @@
 from base import BehaviorBase
-from bot import BOT_RADIUS, \
+from engine.bot import BOT_RADIUS, \
                 MAX_SENSING_DISTANCE, KNOW_BOT_POSITIONS, \
                 OBSTACLE_CLEARANCE, BOT_VEL_CAP, BOT_ACCEL_CAP
 from engine import Movement
 import potential
 from sensor import Sensor
-from vector import Vector, length, normalize, dist, signed_angle
+from engine.vector import Vector, length, normalize, dist, signed_angle
 from math import pi, atan2, cos, degrees
-import graphics
+from engine import graphics
 
 
 _FORCE_SENSITIVITY = 1.0

@@ -7,10 +7,10 @@ import os
 import engine
 import behaviors
 import models
-from vector import Point
-from graphics import Graphics
-from field import Field
-from bot import Bot
+from engine.vector import Point
+from engine.graphics import Graphics
+from engine.field import Field
+from engine.bot import Bot
 from obstacle_maps import maps
 
 

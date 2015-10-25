@@ -1,6 +1,6 @@
 import math
 
-from vector import Vector, normalize
+from engine.vector import Vector, normalize
 
 
 class morse():

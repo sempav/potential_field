@@ -1,5 +1,5 @@
-from vector import Vector, normalize, dist, rotate
-from shapes import Ray, first_intersection
+from engine.vector import Vector, normalize, dist, rotate
+from engine.shapes import Ray, first_intersection
 from math import cos, sin
 
 class Sensor():

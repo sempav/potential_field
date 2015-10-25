@@ -1,12 +1,12 @@
 from functools import partial
 
 from base import BehaviorBase
-from bot import BOT_RADIUS, \
+from engine.bot import BOT_RADIUS, \
                 MAX_SENSING_DISTANCE, KNOW_BOT_POSITIONS, \
                 OBSTACLE_CLEARANCE
 from engine import Movement
 import potential
-from vector import Vector, length, normalize, dist
+from engine.vector import Vector, length, normalize, dist
 
 
 _FORCE_SENSITIVITY = 5e-4

@@ -1,7 +1,7 @@
-from bot import BOT_VEL_CAP, BOT_ACCEL_CAP, BOT_RADIUS
-from vector import Point, Vector, signed_angle, rotate, length, normalize
+from engine.bot import BOT_VEL_CAP, BOT_ACCEL_CAP, BOT_RADIUS
+from engine.vector import Point, Vector, signed_angle, rotate, length, normalize
 from math import pi, copysign, sin, cos
-from graphics import draw_circle, draw_line, BOT_COLOR
+from engine.graphics import draw_circle, draw_line, BOT_COLOR
 
 MIN_ROTATION_ANGLE = 0.01 * pi
 ROTATION_GAIN = 1.0 # !before changing check abs_vel *= cos(ang) line

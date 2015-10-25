@@ -1,5 +1,5 @@
-from vector import Point
-import obstacle
+from engine.vector import Point
+from engine import obstacle
 
 maps = [[] for i in xrange(10)]
 
