@@ -12,7 +12,7 @@ from engine import graphics
 
 _FORCE_SENSITIVITY = 1.0
 COLLISION_CHECK = True
-CRITICAL_DIST = 0.2 * BOT_RADIUS
+CRITICAL_DIST = 0.5 * BOT_RADIUS
 CRITICAL_VEL = 1e-6
 COLLISION_DELTA_TIME = BOT_VEL_CAP / BOT_ACCEL_CAP
 ROTATE_SENSORS = True
@@ -21,7 +21,7 @@ ROTATE_SENSORS = True
 class SensorBased(BehaviorBase):
     def __init__(self, movement=Movement.Accel, 
                  max_sensing_distance = MAX_SENSING_DISTANCE,
-                 num_sensors=16,
+                 num_sensors=32,
                  sensor_angles=None):
         self.movement = movement
         self.radius = BOT_RADIUS
@@ -39,6 +39,7 @@ class SensorBased(BehaviorBase):
 
     def calc_desired_velocity(self, bots, obstacles, targets):
         vel = self.real_vel
+        self.collision_delta_time = length(vel) / BOT_ACCEL_CAP
         if self.movement != Movement.Accel:
             vel = Vector(0, 0)
         for inter in bots:
@@ -67,7 +68,7 @@ class SensorBased(BehaviorBase):
             d = s.get_distance(self.pos, ang, obstacles)
             self.distances.append(d)
             if d < self.max_sensing_distance:
-                force = -potential.gradient(potential.inverse_quadratic(k=0.5),
+                force = -potential.gradient(potential.inverse_quadratic(k=1.5),
                                             d,
                                             -s.get_ray(self.pos, ang).dir,
                                             OBSTACLE_CLEARANCE)
@@ -96,7 +97,7 @@ class SensorBased(BehaviorBase):
                     continue
                 r = s.get_ray(self.pos, ang)
                 c = cos(signed_angle(vel, r.dir))
-                new_d = cur_d - c * abs_vel * COLLISION_DELTA_TIME
+                new_d = cur_d - c * abs_vel * self.collision_delta_time
                 if new_d < CRITICAL_DIST and new_d < cur_d:
                     collision = True
                     break
@@ -106,8 +107,8 @@ class SensorBased(BehaviorBase):
                     # don't count collsions with self
                     if inter.virtual is self:
                         continue
-                    new_d = dist(inter.real.pos + COLLISION_DELTA_TIME * inter.real.vel,
-                                 self.pos + COLLISION_DELTA_TIME * vel)
+                    new_d = dist(inter.real.pos + self.collision_delta_time * inter.real.vel,
+                                 self.pos + self.collision_delta_time * vel)
                     new_d -= (self.radius + inter.real.radius)
                     cur_d = dist(inter.real.pos, self.pos)
                     cur_d -= (self.radius + inter.real.radius)
