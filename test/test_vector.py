@@ -1,7 +1,7 @@
 import unittest
-from vector import Vector, Point, geom_places, length, dist
-from vector import normalize, dot, cross, angle, signed_angle
-from vector import rotate
+from engine.vector import Vector, Point, geom_places, length, dist
+from engine.vector import normalize, dot, cross, angle, signed_angle
+from engine.vector import rotate
 
 class VectorTestCase(unittest.TestCase):
     def testLength(self):

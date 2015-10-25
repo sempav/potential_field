@@ -1,6 +1,6 @@
 import unittest
-from vector import Point, Vector
-from shapes import Ray, Circle, Segment, Polygon
+from engine.vector import Point, Vector
+from engine.shapes import Ray, Circle, Segment, Polygon
 
 
 class CircleTestCase(unittest.TestCase):
