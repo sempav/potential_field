@@ -6,7 +6,7 @@ import shapes
 from graphics import OBSTACLE_COLOR
 from vector import Vector, dist, normalize, dot, cross
 
-class Obstacle():
+class Obstacle(object):
     # distance_field takes a Point and returns distance to the obstacle
     # repulsion_field takes a Point and returns direction of the gradient of distance_field
     def __init__(self, distance_field, repulsion_field, _shape):

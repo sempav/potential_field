@@ -2,7 +2,7 @@ from graphics import draw_circle, draw_line
 from vector import normalize, dot, cross, length, Vector
 from math import sqrt
 
-class Ray():
+class Ray(object):
     def __init__(self, _orig, _dir):
         self.orig = _orig
         self.dir = normalize(_dir)
@@ -26,7 +26,7 @@ def first_intersection(ray, objects):
         return None
 
 
-class Circle():
+class Circle(object):
     def __init__(self, _center, _radius):
         self.center = _center
         self.radius = _radius
@@ -56,7 +56,7 @@ class Circle():
         draw_circle(screen, field, color, self.center, self.radius)
 
 
-class Segment():
+class Segment(object):
     def __init__(self, _a, _b):
         self.a = _a
         self.b = _b
@@ -81,7 +81,7 @@ class Segment():
         draw_line(screen, field, color, self.a, self.b)
 
 
-class Polygon():
+class Polygon(object):
     def __init__(self, _vertices):
         self.edges = []
         prev = _vertices[-1]

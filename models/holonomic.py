@@ -2,7 +2,7 @@ from engine.bot import BOT_VEL_CAP, BOT_ACCEL_CAP, BOT_RADIUS
 from engine.vector import Point, Vector, length, normalize
 from engine.graphics import draw_circle, BOT_COLOR
 
-class HolonomicModel():
+class HolonomicModel(object):
     def __init__(self, pos = (0.0, 0.0), dir = (1.0, 0.0), vel = 0.0,
                        max_vel = BOT_VEL_CAP,
                        max_accel = BOT_ACCEL_CAP,

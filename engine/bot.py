@@ -7,7 +7,7 @@ OBSTACLE_CLEARANCE = 0.0 * BOT_RADIUS
 KNOW_BOT_POSITIONS = True
 
 
-class Bot():
+class Bot(object):
     def __init__(self, model, behavior):
         self.virtual = behavior
         self.real = model

@@ -7,7 +7,7 @@ MIN_ROTATION_ANGLE = 0.01 * pi
 ROTATION_GAIN = 1.0 # !before changing check abs_vel *= cos(ang) line
 MAX_VEL_ANGLE = pi / 3
 
-class DifferentialModel():
+class DifferentialModel(object):
     def __init__(self, pos, dir, vel = 0.0,
                        max_vel = BOT_VEL_CAP,
                        max_accel = BOT_ACCEL_CAP,

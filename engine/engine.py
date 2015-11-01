@@ -7,7 +7,7 @@ class Movement(enum.Enum):
     Dir = 3
 
 
-class Engine():
+class Engine(object):
 
     def __init__(self, field):
         self.field = field

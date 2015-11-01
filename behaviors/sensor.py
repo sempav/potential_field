@@ -2,7 +2,7 @@ from engine.vector import Vector, normalize, dist, rotate
 from engine.shapes import Ray, first_intersection
 from math import cos, sin
 
-class Sensor():
+class Sensor(object):
     def __init__(self, angle, bot_radius, max_distance):
         self.angle = angle
         self.bot_radius = bot_radius

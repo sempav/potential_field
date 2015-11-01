@@ -32,7 +32,7 @@ def draw_line(screen, field, color, a, b, thickness=2):
                      thickness)
 
 
-class Graphics:
+class Graphics(object):
     def __init__(self, field, size = (1024, 768)):
         self.field = field
         self.size = size

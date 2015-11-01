@@ -3,7 +3,7 @@ import math
 from engine.vector import Vector, normalize
 
 
-class morse():
+class morse(object):
     def __init__(self, r0, k, a):
         self.r0 = r0
         self.k = k
@@ -22,7 +22,7 @@ class morse():
         return 2 * k * (1 - math.exp(-a * (r - r0))) * a * math.exp(-a * (r - r0))
 
 
-class linear():
+class linear(object):
     def __init__(self, k=1.0):
         self.k = k
 
@@ -33,7 +33,7 @@ class linear():
         return self.k
 
 
-class quadratic():
+class quadratic(object):
     def __init__(self, k=1.0):
         self.k = k
 
@@ -44,7 +44,7 @@ class quadratic():
         return 2 * self.k * r
 
 
-class inverse_quadratic():
+class inverse_quadratic(object):
     def __init__(self, k=1.0):
         self.k = k
 

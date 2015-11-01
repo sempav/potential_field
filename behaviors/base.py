@@ -1,4 +1,4 @@
-class BehaviorBase():
+class BehaviorBase(object):
     """
     "Abstract" base class for movement logic.
 

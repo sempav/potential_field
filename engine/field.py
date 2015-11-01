@@ -4,7 +4,7 @@ EPSILON = 1e-3
 
 FIELD_CENTERED = True
 
-class Field:
+class Field(object):
     '''This class is responsible for conversion between physical and on-screen coords'''
 
 
